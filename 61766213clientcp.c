@@ -57,7 +57,7 @@ char *argv[];
 
 	/* Create the socket. */
 	s = socket (AF_INET, SOCK_STREAM, 0);
-	if (s == -1) {
+	if (s == -1) {x
 		perror(argv[0]);
 		fprintf(stderr, "%s: unable to create socket\n", argv[0]);
 		exit(1);
@@ -74,7 +74,7 @@ char *argv[];
 	 * user passed in. */
       memset (&hints, 0, sizeof (hints));
       hints.ai_family = AF_INET;
- 	 /* esta función es la recomendada para la compatibilidad con IPv6 gethostbyname queda obsoleta*/
+ 	 /* esta funciï¿½n es la recomendada para la compatibilidad con IPv6 gethostbyname queda obsoleta*/
     errcode = getaddrinfo (argv[1], NULL, &hints, &res); 
     if (errcode != 0){
 			/* Name was not found.  Return a
