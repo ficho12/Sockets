@@ -27,7 +27,7 @@ char *argv[];
     struct sockaddr_in clientaddr_in;
 
     fd_S = socket (AF_INET, SOCK_STREAM, 0);
-    if (fd_socket == -1) {
+    if (fd_S == -1) {
         perror(argv[0]);
         fprintf(stderr, "%s: no se pudo crear el socket TCP\n", argv[0]);
         exit(1);
