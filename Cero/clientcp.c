@@ -1,16 +1,3 @@
-/*
- *			C L I E N T C P
- *
- *	This is an example program that demonstrates the use of
- *	stream sockets as an IPC mechanism.  This contains the client,
- *	and is intended to operate in conjunction with the server
- *	program.  Together, these two programs
- *	demonstrate many of the features of sockets, as well as good
- *	conventions for using these features.
- *
- *
- */
- 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -25,21 +12,10 @@
 #define PUERTO 17278
 #define TAM_BUFFER 10
 
-/*
- *			M A I N
- *
- *	This routine is the client which request service from the remote.
- *	It creates a connection, sends a number of
- *	requests, shuts down the connection in one direction to signal the
- *	server about the end of data, and then receives all of the responses.
- *	Status will be written to stdout.
- *
- *	The name of the system to which the requests will be sent is given
- *	as a parameter to the command.
- */
 int main(argc, argv)
 int argc;
 char *argv[];
+
 {
     int s;				/* connected socket descriptor */
    	struct addrinfo hints, *res;
@@ -57,13 +33,12 @@ char *argv[];
 
 	/* Create the socket. */
 	s = socket (AF_INET, SOCK_STREAM, 0);
-	if (s == -1) {x
+	if (s == -1) {
 		perror(argv[0]);
 		fprintf(stderr, "%s: unable to create socket\n", argv[0]);
 		exit(1);
 	}
-	
-	/* clear out address structures */
+    	/* clear out address structures */
 	memset ((char *)&myaddr_in, 0, sizeof(struct sockaddr_in));
 	memset ((char *)&servaddr_in, 0, sizeof(struct sockaddr_in));
 
@@ -100,7 +75,8 @@ char *argv[];
 		fprintf(stderr, "%s: unable to connect to remote\n", argv[0]);
 		exit(1);
 	}
-		/* Since the connect call assigns a free address
+
+			/* Since the connect call assigns a free address
 		 * to the local end of this connection, let's use
 		 * getsockname to see what it assigned.  Note that
 		 * addrlen needs to be passed in as a pointer,
