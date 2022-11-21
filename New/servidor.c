@@ -197,7 +197,7 @@ char *argv[];
                     FIN=1;
 		            close (ls_TCP);
 		            close (s_UDP);
-                    perror("\nFinalizando el servidor. SeÃal recibida en elect\n "); 
+                    perror("\nFinalizando el servidor. Seï¿½al recibida en elect\n "); 
                 }
             }
            else { 
@@ -261,7 +261,7 @@ char *argv[];
                 serverUDP (s_UDP, buffer, clientaddr_in);
                 }
           }
-		}   /* Fin del bucle infinito de atención a clientes */
+		}   /* Fin del bucle infinito de atenciï¿½n a clientes */
         /* Cerramos los sockets UDP y TCP */
         close(ls_TCP);
         close(s_UDP);
@@ -296,6 +296,28 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
     
     struct linger linger;		/* allow a lingering, graceful close; */
     				            /* used when setting SO_LINGER */
+
+	//Variables aÃ±adidas
+	char *mensaje_r;
+	char *html;
+	char *comando;
+	int comando_b = 0;
+	char *tipo,*tipo_aux;
+	char *aux;
+	FILE * log;
+	long long final_log;
+	char logString[1024];
+	char logFileName[99];
+	int contador = 0;
+	
+	int smtp_number = 501;
+	char * buffer = 0;
+	long long length;
+	FILE * f;
+	//char html2[200];
+	char *respuesta = 0;
+
+	char longitud[256];
     				
 	/* Look up the host information for the remote host
 	 * that we have connected with.  Its internet address
@@ -306,23 +328,45 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
      status = getnameinfo((struct sockaddr *)&clientaddr_in,sizeof(clientaddr_in),
                            hostname,MAXHOST,NULL,0,0);
      if(status){
-           	/* The information is unavailable for the remote
-			 * host.  Just format its internet address to be
-			 * printed out in the logging information.  The
-			 * address will be shown in "internet dot format".
-			 */
-			 /* inet_ntop para interoperatividad con IPv6 */
-            if (inet_ntop(AF_INET, &(clientaddr_in.sin_addr), hostname, MAXHOST) == NULL)
-            	perror(" inet_ntop \n");
-             }
-    /* Log a startup message. */
+		/* The information is unavailable for the remote
+		* host.  Just format its internet address to be
+		* printed out in the logging information.  The
+		* address will be shown in "internet dot format".
+		*/
+		/* inet_ntop para interoperatividad con IPv6 */
+		if (inet_ntop(AF_INET, &(clientaddr_in.sin_addr), hostname, MAXHOST) == NULL)
+			perror(" inet_ntop \n");
+	}
+    
+	//Creamos la String para el nombre del archivo de log dinÃ¡micamente con el numero de puerto que se recibe
+	snprintf(logFileName, sizeof(logFileName), "logs/%d.log", ntohs(clientaddr_in.sin_port));
+	//Abrimos el archvio de log, sino existe se crea
+	log = fopen(logFileName, "a");
+	if(log == NULL)
+	{
+		fprintf(stdout,"Error al crear archivo log.\n");
+		exit(EXIT_FAILURE);
+	}
+	printf("\nLog abierto\n");
+
+	/* Log a startup message. */
     time (&timevar);
+	//Guardamos la string del primer mensaje de log de ComunicaciÃ³n Realizada
+	snprintf(logString,sizeof(logString), "ComunicaciÃ³n Realizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
+
+	//Escribimos la String en el archivo de log
+	fputs(logString, log);
+	
+	//Cerramos archivo de log
+    fclose(log);
+	printf("\nLog Cerrado\n");
 		/* The port number must be converted first to host byte
 		 * order before printing.  On most hosts, this is not
 		 * necessary, but the ntohs() call is included here so
 		 * that this program could easily be ported to a host
 		 * that does require it.
 		 */
+
 	printf("Startup from %s port %u at %s",
 		hostname, ntohs(clientaddr_in.sin_port), (char *) ctime(&timevar));
 
@@ -347,7 +391,219 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		 * how the server will know that no more requests will
 		 * follow, and the loop will be exited.
 		 */
-	while (len = recv(s, buf, TAM_BUFFER, 0)) {
+
+	//Se recibe de KB en KB, mirar que cantidad es la adecuada
+	while (recv(s, mensaje_r, 1024, 0) == 1024) {
+
+		aux = (char*) malloc(1024*sizeof(char));
+
+		printf("%s\n",mensaje_r);
+		
+		aux = strtok(mensaje_r, " ");
+
+		while(aux != NULL)
+		{
+			printf("%s", aux);
+			contador++;
+
+			if(contador == 1){
+				comando = aux;
+			}else if(contador == 2){
+
+				html = aux;
+
+			}else if(contador == 5){
+
+				tipo_aux = aux;
+
+			}
+
+			aux = strtok(NULL, " ");
+
+		}
+
+		tipo = strtok(tipo_aux, "<");
+
+		contador = 0;
+
+		printf("\n%s.....%s.....%s\n",comando, html,tipo);
+
+		if(0 == strcmp(comando,"GET")){
+			comando_b = 1;
+			printf("Comando_b = true\n");
+		}else{
+			comando_b = 0;
+		}
+
+		//Abrimos el html del mensaje
+		/* Proablemente esto no se utilice
+		if(comando_b)
+		{
+			//strcat(html2,"www");
+			//strcat(html2, html);
+			snprintf(html2,sizeof(html2), "www%s",html);
+			printf("%s\n",html2);
+			f = fopen (html2, "r");
+
+			if (f)
+			{
+				fseek (f, 0, SEEK_END);
+				length = ftell (f);
+				fseek (f, 0, SEEK_SET);
+				buffer = malloc (length);
+				if (buffer)
+				{
+					fread (buffer, 1, length, f);
+				}
+				fclose (f);
+				html_number = 200;
+				sprintf(longitud, "%lld", length);
+				printf("Cerrando HTML Longitud: %s\n",longitud);
+			}else
+				html_number = 404;
+		}
+		*/
+		
+		respuesta = (char*) malloc ((length+1000)*sizeof(char));
+		
+		//html_number = 404;
+			
+		switch(smtp_number){
+			case 200:
+				//Si se encuentra
+				//HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: keep-alive<CR><LF>Content-Length: 54<CR><LF><html><body><h1>Universidad de Salamanca</h1></body></html>
+					printf("200 OK\n");
+					snprintf(respuesta,length+1000, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
+					/*
+					strcat(respuesta,"HTTP/1.1 200 OK<CR><LF>Server: ");
+					strcat(respuesta, hostname);
+					strcat(respuesta,"<CR><LF>Connection: ");
+					strcat(respuesta, tipo);
+					strcat(respuesta,"<CR><LF>Content-Length: ");
+					strcat(respuesta, longitud);
+					strcat(respuesta,"<CR><LF>");
+					strcat(respuesta, buffer);
+					*/
+					
+				break;
+			case 404:
+				// ERRORES
+				//HTTP/1.1 404 Not Found<CR><LF>Server: localhost<CR><LF>Connection: keep-alive<CR><LF>Content-Length: 38<CR><LF><html><body><h1>404 Not found</h1></body></html>
+					printf("404\n");
+					snprintf(respuesta,length+1000,"HTTP/1.1 404 Not Found<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF><html><body><h1>404 Not found</h1></body></html>", hostname,tipo,longitud);
+					/*strcat(respuesta,"HTTP/1.1 404 Not Found<CR><LF>Server: ");
+					strcat(respuesta, hostname);
+					strcat(respuesta,"<CR><LF>Connection: ");
+					strcat(respuesta, tipo);
+					strcat(respuesta,"<CR><LF>Content-Length: ");
+					strcat(respuesta, longitud);
+					strcat(respuesta,"<CR><LF><html><body><h1>404 Not found</h1></body></html>");*/
+					printf("Fin 404\n");
+
+				break;
+			case 501:
+			//HTTP/1.1 501 Not Implemented<CR><LF>Server: localhost<CR><LF>Connection: close<CR><LF>Content-Length: 38<CR><LF><html><body><h1> 501 Not Implemented </h1></body></html>
+				printf("501\n");
+				snprintf(respuesta,length+1000,"HTTP/1.1 501 Not Implemented<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF><html><body><h1> 501 Not Implemented </h1></body></html>", hostname,tipo,longitud);
+				/*strcat(respuesta,"HTTP/1.1 501 Not Implemented<CR><LF>Server: ");
+				strcat(respuesta, hostname);
+				strcat(respuesta,"<CR><LF>Connection: ");
+				strcat(respuesta, tipo);
+				strcat(respuesta,"<CR><LF>Content-Length: "); 
+				strcat(respuesta, longitud);
+				strcat(respuesta,"<CR><LF><html><body><h1> 501 Not Implemented </h1></body></html>");*/
+			
+				break;
+		}
+
+
+		printf("Respuesta: %s\n", respuesta);
+		
+		//Comienzo LOG
+		log = fopen(logFileName, "a");
+
+		if(log == NULL)
+		{
+			fprintf(stderr,"Error al abrir el archivo log.\n");
+			exit(EXIT_FAILURE);
+		}
+
+		fputs(respuesta, log);
+
+		if (!strcmp(tipo, "keep-alive "))
+		{
+			fseek (log, 0, SEEK_END);
+			//final_log = ftell (log);
+			snprintf(logString,sizeof(logString), "Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
+			printf("close\n");
+			fputs(logString, log);
+		}else{
+
+			printf("keep-alive\n");
+
+		}
+
+		
+
+		//Cerramos archivo de log
+    	fclose(log);
+		printf("X_\n");
+		free(respuesta);
+		printf("X2_\n");
+		free(mensaje_r);
+		printf("%s",html);
+		free(aux);
+		printf("X3_\n");
+
+	
+
+		
+		printf("Y_\n");
+		sleep(1);
+		/*
+		if (send(s, logString, length+1000, 0) != 200) {
+			fprintf(stderr, "%s: Connection aborted on error ",hostname);
+			exit(1);
+		}
+		*/
+		 mensaje_r = (char *) malloc(1024*sizeof(char));
+  
+	}
+
+
+	
+
+
+
+/*
+while (len = recv(s, buf, 200, 0)) {		// Leer hasta /r o /n cada linea no con TAM_BUFFER
+	if (len == -1) errout(hostname); // error from recv 
+
+	while (len < 200) {
+			len1 = recv(s, &buf[len], 200-len, 0);
+			if (len1 == -1) errout(hostname);
+			len += len1;
+			printf("%s\n",buf);
+		}
+		printf("%s\n",buf);
+			//Increment the request count. 
+			
+			//Send a response back to the client. 
+
+		//if (send(s, buf, TAM_BUFFER, 0) != TAM_BUFFER) errout(hostname);
+}
+	/*
+		/* Go into a loop, receiving requests from the remote
+		 * client.  After the client has sent the last request,
+		 * it will do a shutdown for sending, which will cause
+		 * an end-of-file condition to appear on this end of the
+		 * connection.  After all of the client's requests have
+		 * been received, the next recv call will return zero
+		 * bytes, signalling an end-of-file condition.  This is
+		 * how the server will know that no more requests will
+		 * follow, and the loop will be exited.
+		 
+	while (len = recv(s, buf, TAM_BUFFER, 0)) {		// Leer hasta /r o /n cada linea no con TAM_BUFFER
 		if (len == -1) errout(hostname); /* error from recv */
 			/* The reason this while loop exists is that there
 			 * is a remote possibility of the above recv returning
@@ -362,22 +618,23 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			 * have been received, thus guaranteeing that the
 			 * next recv at the top of the loop will start at
 			 * the begining of the next request.
-			 */
+			 
 		while (len < TAM_BUFFER) {
 			len1 = recv(s, &buf[len], TAM_BUFFER-len, 0);
 			if (len1 == -1) errout(hostname);
 			len += len1;
 		}
-			/* Increment the request count. */
+			/* Increment the request count. 
 		reqcnt++;
 			/* This sleep simulates the processing of the
 			 * request that a real server might do.
-			 */
+			 
 		sleep(1);
-			/* Send a response back to the client. */
+			/* Send a response back to the client. 
 		if (send(s, buf, TAM_BUFFER, 0) != TAM_BUFFER) errout(hostname);
 	}
-
+	*/
+	/*--------------------------------------------------------------------------------*/
 		/* The loop has terminated, because there are no
 		 * more requests to be serviced.  As mentioned above,
 		 * this close will block until all of the sent replies
@@ -400,7 +657,9 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		 */
 	printf("Completed %s port %u, %d requests, at %s\n",
 		hostname, ntohs(clientaddr_in.sin_port), reqcnt, (char *) ctime(&timevar));
+	
 }
+
 
 /*
  *	This routine aborts the child process attending the client.
@@ -437,7 +696,7 @@ void serverUDP(int s, char * buffer, struct sockaddr_in clientaddr_in)
       memset (&hints, 0, sizeof (hints));
       hints.ai_family = AF_INET;
 		/* Treat the message as a string containing a hostname. */
-	    /* Esta función es la recomendada para la compatibilidad con IPv6 gethostbyname queda obsoleta. */
+	    /* Esta funciï¿½n es la recomendada para la compatibilidad con IPv6 gethostbyname queda obsoleta. */
     errcode = getaddrinfo (buffer, NULL, &hints, &res); 
     if (errcode != 0){
 		/* Name was not found.  Return a
