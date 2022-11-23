@@ -391,9 +391,78 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		errout(hostname);
 	}
 
+	
+	//bucle
+	//TODO: Hacer un switch con int
+	/*	Refenciando el diagrama de las diapositivas
+		Nivel	Client												Server
+		0		Conexion											send(220)
+		1		HELO												send(250)	
+		2		MAIL FROM											send(250)
+		3		RCPT TO:	De 3 puede pasar a 3 otra vez o a 4		send(250)
+		4		DATA												send(354)
+		5		leer datos hasta punto								no enviar nada
+		6 		.\r\n												send(250)
+		7		QUIT												send(221)
+	*/
+
+	/*
+	switch(nivel){
+		case 0:		smtp_number = 220;
+			nivel++;
+			break;
+		case 1:		//REGEX HELO <dominio-emisor>
+			if(HELO)
+				smtp_number = 250;
+			else
+				smtp_number = 500;
+			nivel++;
+			break;
+		case 2:		//REGEX MAIL FROM <reverse-path>
+			if(MAIL)
+				smtp_number = 250;
+			else
+				smtp_number = 500;
+			nivel++;
+			break;
+		case 3:		//REGEX RCPT <fordward-path>
+			if(RCPT)
+				smtp_number = 250;
+			else if(case4)
+				//REGEX DATA
+				if(DATA)
+					smtp_number = 354;
+					nivel+=2;
+				else
+					smtp_number = 500;
+
+			case4 = 1; bool case4 = true;
+			break;
+		case 5:		//REGEX .\r\n
+			if (PUNTO)
+				smtp_number = 500;
+			else
+				nivel++;
+			break;
+		case 6:		//REGEX .\r\n
+			if (PUNTO)
+				smtp_number = 250;
+				nivel++;
+			break;
+		case 7:		//REGEX QUIT
+				if (QUIT)
+					smtp_number = 221;
+					fin();
+				else
+					smtp_number = 500;
+			break;
+	}
+
+	*/
+
  	mensaje_r = (char *) malloc(1024);
 	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada
-	while (recv(s, mensaje_r, 1024, 0) == 1024) {
+	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
 		aux = (char*) malloc(1024*sizeof(char));
 
@@ -421,9 +490,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 			}
 
-
 			aux = strtok(NULL, " ");
-
 		}
 
 		tipo = strtok(tipo_aux, "<");
@@ -478,7 +545,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 					snprintf(cabecera,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>",hostname,tipo,longitud);
 				break;
 			case 221:	//Respuesta a la orden QUIT
-					printf("221 Cerrrando el servicio\n");	//Cambiar Respuesta
+					printf("221 Cerrando el servicio\n");	//Cambiar Respuesta
 					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
 					snprintf(cabecera,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>",hostname,tipo,longitud);
 				break;
