@@ -27,6 +27,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "regex.c"
 
 
 #define PUERTO 2873
@@ -320,12 +321,13 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	char logString[1024];
 	char logFileName[99];
 	int contador = 0;
+	int nivel = 0;
+	int case4 = 0;
 	
 	int smtp_number = 500;
 	char * buffer = 0;
 	long long length = 0,length2 = 0;
 	FILE * f;
-	//char html2[200];
 	char *respuesta = 0,*cabecera = 0,*paquete = 0;
 
 	char longitud[256];
@@ -391,75 +393,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		errout(hostname);
 	}
 
-	
-	//bucle
-	//TODO: Hacer un switch con int
-	/*	Refenciando el diagrama de las diapositivas
-		Nivel	Client												Server
-		0		Conexion											send(220)
-		1		HELO												send(250)	
-		2		MAIL FROM											send(250)
-		3		RCPT TO:	De 3 puede pasar a 3 otra vez o a 4		send(250)
-		4		DATA												send(354)
-		5		leer datos hasta punto								no enviar nada
-		6 		.\r\n												send(250)
-		7		QUIT												send(221)
-	*/
-
-	/*
-	switch(nivel){
-		case 0:		smtp_number = 220;
-			nivel++;
-			break;
-		case 1:		//REGEX HELO <dominio-emisor>
-			if(HELO)
-				smtp_number = 250;
-			else
-				smtp_number = 500;
-			nivel++;
-			break;
-		case 2:		//REGEX MAIL FROM <reverse-path>
-			if(MAIL)
-				smtp_number = 250;
-			else
-				smtp_number = 500;
-			nivel++;
-			break;
-		case 3:		//REGEX RCPT <fordward-path>
-			if(RCPT)
-				smtp_number = 250;
-			else if(case4)
-				//REGEX DATA
-				if(DATA)
-					smtp_number = 354;
-					nivel+=2;
-				else
-					smtp_number = 500;
-
-			case4 = 1; bool case4 = true;
-			break;
-		case 5:		//REGEX .\r\n
-			if (PUNTO)
-				smtp_number = 500;
-			else
-				nivel++;
-			break;
-		case 6:		//REGEX .\r\n
-			if (PUNTO)
-				smtp_number = 250;
-				nivel++;
-			break;
-		case 7:		//REGEX QUIT
-				if (QUIT)
-					smtp_number = 221;
-					fin();
-				else
-					smtp_number = 500;
-			break;
-	}
-
-	*/
-
  	mensaje_r = (char *) malloc(1024);
 	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
@@ -471,7 +404,73 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		//TODO: Leer y separar cadenas del mensaje recibido para saber que mensaje devolver al cliente
 
 		smtp_number = 500;
+
+		//bucle
+		//TODO: Hacer un switch con int
+		/*	Refenciando el diagrama de las diapositivas
+			Nivel	Client												Server
+			0		Conexion											send(220)
+			1		HELO												send(250)	
+			2		MAIL FROM											send(250)
+			3		RCPT TO:	De 3 puede pasar a 3 otra vez o a 4		send(250)
+			4		DATA												send(354)
+			5		leer datos hasta punto								no enviar nada
+			6 		.\r\n												send(250)
+			7		QUIT												send(221)
+		*/		
+		switch(nivel){
+			case 0:		
+				smtp_number = 220;
+				nivel++;
+				break;
+			case 1:		//REGEX HELO <dominio-emisor>
+				if(reg(mensaje_r,regHELO))
+					smtp_number = 250;
+				else
+					smtp_number = 500;
+				nivel++;
+				break;
+			case 2:		//REGEX MAIL FROM <reverse-path>
+				if(reg(mensaje_r,regMAIL))
+					smtp_number = 250;
+				else
+					smtp_number = 500;
+				nivel++;
+				break;
+			case 3:		//REGEX RCPT <fordward-path>
+				if(reg(mensaje_r,regRCPT))
+					smtp_number = 250;
+				else if(case4)
+					//REGEX DATA
+					if(reg(mensaje_r,regDATA)){
+						smtp_number = 354;
+						nivel+=2;
+					}else
+						smtp_number = 500;
+
+				case4 = 1; //bool case4 = true;
+				break;
+			case 5:		//REGEX .\r\n
+				if(reg(mensaje_r,regPUNTO))
+					smtp_number = 500;
+				else
+					nivel++;
+				break;
+			case 6:		//REGEX .\r\n
+				if(reg(mensaje_r,regPUNTO)){
+					smtp_number = 250;
+					nivel++;
+				}
+				break;
+			case 7:		//REGEX QUIT
+				if(reg(mensaje_r,regQUIT))
+					smtp_number = 221;
+				else
+					smtp_number = 500;
+				break;
+		}
 		
+		/*
 		aux = strtok(mensaje_r, " ");
 
 		while(aux != NULL)
@@ -568,7 +567,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 		length += 1024;
 		sprintf(longitud, "%lld", length);	//No me acuerdo que hace esto	//Edito: creo que le envía el número de bytes que le va a enviar al cliente para que sepa cuando parar.
-
+		//Edit2: Creo que esto se puede omitir ya que casi todos los mensajes son pequeños, menos el DATA. Así que mejor dejarlo probablemente
 		if (send(s, longitud, sizeof(char)*256, 0) < 0) {
 				fprintf(stderr, "%s: Connection aborted on error ",	comando);
 				exit(1);
@@ -578,7 +577,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 		//sleep(4);
 
-		//Aqui ya envia la página web
+		//Aqui ya envia el mensaje
 		while(length2 < length){
 
 			if (send(s, paquete, 1024, 0) <= 0) {
@@ -664,7 +663,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	printf("Completed %s port %u, %d requests, at %s\n",
 		hostname, ntohs(clientaddr_in.sin_port), reqcnt, (char *) ctime(&timevar));
 
-	log = fopen(logFileName, "a");
+	log = fopen(logFileName, "a");	//a --> Append. Se escribe al final del archivo
 	if(log == NULL)
 	{
 		fprintf(stdout,"Error al abrir el archivo log %d.\n", logFileName);
@@ -742,3 +741,4 @@ void serverUDP(int s, char * buffer, struct sockaddr_in clientaddr_in)
 	printf("\nServer UDP no implementado. Cerrando...\n");
 	exit (1);
  }
+
