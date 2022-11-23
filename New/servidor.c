@@ -1,4 +1,4 @@
-/*
+ /*
  *          		S E R V I D O R
  *
  *	This is an example program that demonstrates the use of
@@ -393,12 +393,14 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		 */
 
 	//Se recibe de KB en KB, mirar que cantidad es la adecuada
-	while (recv(s, mensaje_r, 1024, 0) == 1024) {
+	while (recv(s, mensaje_r, 1024, 0) == 1024) {// while (recv(s, mensaje_r, 1024, 0) <= 1024)? Devuelve el Nº de números leídos. Puede que lea <1024
 
 		aux = (char*) malloc(1024*sizeof(char));
 
 		printf("%s\n",mensaje_r);
-		
+
+		//TODO: Leer y separar cadenas del mensaje recibido para saber que mensaje devolver al cliente
+		/*
 		aux = strtok(mensaje_r, " ");
 
 		while(aux != NULL)
@@ -434,9 +436,10 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		}else{
 			comando_b = 0;
 		}
+		*/
 
 		//Abrimos el html del mensaje
-		/* Proablemente esto no se utilice
+		/* Probablemente esto no se utilice
 		if(comando_b)
 		{
 			//strcat(html2,"www");
@@ -467,52 +470,28 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		respuesta = (char*) malloc ((length+1000)*sizeof(char));
 		
 		//html_number = 404;
-			
-		switch(smtp_number){
-			case 200:
-				//Si se encuentra
-				//HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: keep-alive<CR><LF>Content-Length: 54<CR><LF><html><body><h1>Universidad de Salamanca</h1></body></html>
-					printf("200 OK\n");
-					snprintf(respuesta,length+1000, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
-					/*
-					strcat(respuesta,"HTTP/1.1 200 OK<CR><LF>Server: ");
-					strcat(respuesta, hostname);
-					strcat(respuesta,"<CR><LF>Connection: ");
-					strcat(respuesta, tipo);
-					strcat(respuesta,"<CR><LF>Content-Length: ");
-					strcat(respuesta, longitud);
-					strcat(respuesta,"<CR><LF>");
-					strcat(respuesta, buffer);
-					*/
-					
-				break;
-			case 404:
-				// ERRORES
-				//HTTP/1.1 404 Not Found<CR><LF>Server: localhost<CR><LF>Connection: keep-alive<CR><LF>Content-Length: 38<CR><LF><html><body><h1>404 Not found</h1></body></html>
-					printf("404\n");
-					snprintf(respuesta,length+1000,"HTTP/1.1 404 Not Found<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF><html><body><h1>404 Not found</h1></body></html>", hostname,tipo,longitud);
-					/*strcat(respuesta,"HTTP/1.1 404 Not Found<CR><LF>Server: ");
-					strcat(respuesta, hostname);
-					strcat(respuesta,"<CR><LF>Connection: ");
-					strcat(respuesta, tipo);
-					strcat(respuesta,"<CR><LF>Content-Length: ");
-					strcat(respuesta, longitud);
-					strcat(respuesta,"<CR><LF><html><body><h1>404 Not found</h1></body></html>");*/
-					printf("Fin 404\n");
 
+		//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
+		switch(smtp_number){
+			case 220:	//Respuesta cuando el cliente realiza la conexión
+					printf("220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
+					snprintf(respuesta,length+1000, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
 				break;
-			case 501:
-			//HTTP/1.1 501 Not Implemented<CR><LF>Server: localhost<CR><LF>Connection: close<CR><LF>Content-Length: 38<CR><LF><html><body><h1> 501 Not Implemented </h1></body></html>
-				printf("501\n");
-				snprintf(respuesta,length+1000,"HTTP/1.1 501 Not Implemented<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF><html><body><h1> 501 Not Implemented </h1></body></html>", hostname,tipo,longitud);
-				/*strcat(respuesta,"HTTP/1.1 501 Not Implemented<CR><LF>Server: ");
-				strcat(respuesta, hostname);
-				strcat(respuesta,"<CR><LF>Connection: ");
-				strcat(respuesta, tipo);
-				strcat(respuesta,"<CR><LF>Content-Length: "); 
-				strcat(respuesta, longitud);
-				strcat(respuesta,"<CR><LF><html><body><h1> 501 Not Implemented </h1></body></html>");*/
-			
+			case 221:	//Respuesta a la orden QUIT
+					printf("221 Cerrrando el servicio\n");	//Cambiar Respuesta
+					snprintf(respuesta,length+1000, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
+				break;
+			case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
+					printf("250 OK\n");	//Cambiar Respuesta
+					snprintf(respuesta,length+1000, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
+				break;
+			case 354:	//Respuesta al envío de la orden DATA
+					printf("250 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
+					snprintf(respuesta,length+1000, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
+				break;
+			case 500:	//Respuesta a errores de sintaxis en cualquier orden
+					printf("500 Error de sintaxis\n");	//Cambiar Respuesta
+					snprintf(respuesta,length+1000, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
 				break;
 		}
 
@@ -530,6 +509,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 		fputs(respuesta, log);
 
+		/*
 		if (!strcmp(tipo, "keep-alive "))
 		{
 			fseek (log, 0, SEEK_END);
@@ -538,10 +518,9 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			printf("close\n");
 			fputs(logString, log);
 		}else{
-
 			printf("keep-alive\n");
-
 		}
+		*/
 
 		
 
@@ -554,86 +533,18 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		printf("%s",html);
 		free(aux);
 		printf("X3_\n");
-
-	
-
-		
 		printf("Y_\n");
-		sleep(1);
-		/*
-		if (send(s, logString, length+1000, 0) != 200) {
+		sleep(1); // Mirar esto porque creo recordar que si lo quitabas daba error XD
+		
+		if (send(s, logString, length+1000, 0) != 200) { //Comprobar mensaje respuesta funcion
 			fprintf(stderr, "%s: Connection aborted on error ",hostname);
 			exit(1);
 		}
-		*/
+		
 		 mensaje_r = (char *) malloc(1024*sizeof(char));
   
 	}
 
-
-	
-
-
-
-/*
-while (len = recv(s, buf, 200, 0)) {		// Leer hasta /r o /n cada linea no con TAM_BUFFER
-	if (len == -1) errout(hostname); // error from recv 
-
-	while (len < 200) {
-			len1 = recv(s, &buf[len], 200-len, 0);
-			if (len1 == -1) errout(hostname);
-			len += len1;
-			printf("%s\n",buf);
-		}
-		printf("%s\n",buf);
-			//Increment the request count. 
-			
-			//Send a response back to the client. 
-
-		//if (send(s, buf, TAM_BUFFER, 0) != TAM_BUFFER) errout(hostname);
-}
-	/*
-		/* Go into a loop, receiving requests from the remote
-		 * client.  After the client has sent the last request,
-		 * it will do a shutdown for sending, which will cause
-		 * an end-of-file condition to appear on this end of the
-		 * connection.  After all of the client's requests have
-		 * been received, the next recv call will return zero
-		 * bytes, signalling an end-of-file condition.  This is
-		 * how the server will know that no more requests will
-		 * follow, and the loop will be exited.
-		 
-	while (len = recv(s, buf, TAM_BUFFER, 0)) {		// Leer hasta /r o /n cada linea no con TAM_BUFFER
-		if (len == -1) errout(hostname); /* error from recv */
-			/* The reason this while loop exists is that there
-			 * is a remote possibility of the above recv returning
-			 * less than TAM_BUFFER bytes.  This is because a recv returns
-			 * as soon as there is some data, and will not wait for
-			 * all of the requested data to arrive.  Since TAM_BUFFER bytes
-			 * is relatively small compared to the allowed TCP
-			 * packet sizes, a partial receive is unlikely.  If
-			 * this example had used 2048 bytes requests instead,
-			 * a partial receive would be far more likely.
-			 * This loop will keep receiving until all TAM_BUFFER bytes
-			 * have been received, thus guaranteeing that the
-			 * next recv at the top of the loop will start at
-			 * the begining of the next request.
-			 
-		while (len < TAM_BUFFER) {
-			len1 = recv(s, &buf[len], TAM_BUFFER-len, 0);
-			if (len1 == -1) errout(hostname);
-			len += len1;
-		}
-			/* Increment the request count. 
-		reqcnt++;
-			/* This sleep simulates the processing of the
-			 * request that a real server might do.
-			 
-		sleep(1);
-			/* Send a response back to the client. 
-		if (send(s, buf, TAM_BUFFER, 0) != TAM_BUFFER) errout(hostname);
-	}
-	*/
 	/*--------------------------------------------------------------------------------*/
 		/* The loop has terminated, because there are no
 		 * more requests to be serviced.  As mentioned above,
