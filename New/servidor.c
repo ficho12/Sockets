@@ -232,7 +232,7 @@ char *argv[];
         			case -1:	/* Can't fork, just exit. */
         				exit(1);
         			case 0:		/* Child process comes here. */
-                    			close(ls_TCP); /* Close the listen socket inherited from the daemon. */
+                    	close(ls_TCP); /* Close the listen socket inherited from the daemon. */
         				serverTCP(s_TCP, clientaddr_in);
         				exit(0);
         			default:	/* Daemon process comes here. */

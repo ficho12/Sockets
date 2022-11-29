@@ -43,6 +43,8 @@ int main(argc, argv)
 int argc;
 char *argv[];
 {
+	const char* filename = argv[3];
+	// TODO: Comprobacion de errores
     int s;				/* connected socket descriptor */
    	struct addrinfo hints, *res;
     long timevar;			/* contains time returned by time() */
@@ -144,14 +146,28 @@ char *argv[];
 	printf("Connected to %s on port %u at %s",
 			argv[1], ntohs(myaddr_in.sin_port), (char *) ctime(&timevar));
 
-	snprintf(logFileName, sizeof(logFileName), "logs/%d.txt", ntohs(clientaddr_in.sin_port));
+	snprintf(logFileName, sizeof(logFileName), "logs/%d.txt", ntohs(myaddr_in.sin_port));
+
+	//Abrimos el archvio de log, sino existe se crea
+	log = fopen(logFileName, "a");
+	if(log == NULL)
+	{
+		fprintf(stdout,"Error al crear archivo log.\n");
+		exit(EXIT_FAILURE);
+	}
+	printf("\nLog abierto\n");
 
 	FILE* input_file = fopen(filename, "r");
 
 	if (!input_file)
-        exit(EXIT_FAILURE);
+    {
+		fprintf(stdout,"Error al leer el archivo de ordenes.\n");
+		exit(EXIT_FAILURE);
+	}
 
-	char contents[255];
+
+	char *contents;
+	size_t cont_size = 256;
 	char delim[] = " ";
 	char tipo[2];
 	char *pagina;
@@ -167,10 +183,8 @@ char *argv[];
 	long long length, length2 = 0, lengthRecibido;
 	int e;
 	char longitud[256];
-	FILE* log;
 	char fichero[256];
 
-	snprintf(fichero, sizeof(fichero),"logs/%d.txt",ntohs(myaddr_in.sin_port));
 	//TODO: Leer archivo de ordenes y enviar mensajes \r\l
 
 	/*
@@ -183,65 +197,45 @@ char *argv[];
 		}
 		fclose(fp);
 	*/
-	
-	for (i=1; i<=5; i++) {
-		*buf = i;
-		if (send(s, buf, TAM_BUFFER, 0) != TAM_BUFFER) {
-			fprintf(stderr, "%s: Connection aborted on error ",	argv[0]);
-			fprintf(stderr, "on send number %d\n", i);
+
+	contents = (char*) malloc ((256)*sizeof(char));
+
+
+	while(getline(&contents,&cont_size,input_file) != -1)
+	{
+		snprintf(mensaje, 1024,"%s\r\n",contents);
+
+		if (send(s, mensaje, 1024, 0) == -1) {
+			fprintf(stderr, "%s: Connection aborted on error ",	get_s);
 			exit(1);
 		}
+
+		respuesta = (char*) malloc ((1024)*sizeof(char));
+
+		if(recv(s, respuesta, sizeof(respuesta), 0) < 0){
+			fprintf(stderr, "Connection aborted on error ");
+			exit(1);
+		}
+
+		fputs(respuesta, log);
+		fseek (log, 0, SEEK_END);
+		free(respuesta);
+		free(contents);
+		contents = (char*) malloc ((256)*sizeof(char));
 	}
 
-		/* Now, shutdown the connection for further sends.
-		 * This will cause the server to receive an end-of-file
-		 * condition after it has received all the requests that
-		 * have just been sent, indicating that we will not be
-		 * sending any further requests.
-		 */
+	fclose(input_file);
+
+	/* Now, shutdown the connection for further sends.
+	* This will cause the server to receive an end-of-file
+	* condition after it has received all the requests that
+	* have just been sent, indicating that we will not be
+	* sending any further requests.
+	*/
 	if (shutdown(s, 1) == -1) {
 		perror(argv[0]);
 		fprintf(stderr, "%s: unable to shutdown socket\n", argv[0]);
 		exit(1);
-	}
-
-		/* Now, start receiving all of the replys from the server.
-		 * This loop will terminate when the recv returns zero,
-		 * which is an end-of-file condition.  This will happen
-		 * after the server has sent all of its replies, and closed
-		 * its end of the connection.
-		 */
-	while (i = recv(s, buf, TAM_BUFFER, 0)) {
-		if (i == -1) {
-            perror(argv[0]);
-			fprintf(stderr, "%s: error reading result\n", argv[0]);
-			exit(1);
-		}
-			/* The reason this while loop exists is that there
-			 * is a remote possibility of the above recv returning
-			 * less than TAM_BUFFER bytes.  This is because a recv returns
-			 * as soon as there is some data, and will not wait for
-			 * all of the requested data to arrive.  Since TAM_BUFFER bytes
-			 * is relatively small compared to the allowed TCP
-			 * packet sizes, a partial receive is unlikely.  If
-			 * this example had used 2048 bytes requests instead,
-			 * a partial receive would be far more likely.
-			 * This loop will keep receiving until all TAM_BUFFER bytes
-			 * have been received, thus guaranteeing that the
-			 * next recv at the top of the loop will start at
-			 * the begining of the next reply.
-			 */
-		while (i < TAM_BUFFER) {
-			j = recv(s, &buf[i], TAM_BUFFER-i, 0);
-			if (j == -1) {
-                     perror(argv[0]);
-			         fprintf(stderr, "%s: error reading result\n", argv[0]);
-			         exit(1);
-               }
-			i += j;
-		}
-			/* Print out message indicating the identity of this reply. */
-		printf("Received result number %d\n", *buf);
 	}
 
     /* Print message indicating completion of task. */

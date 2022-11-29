@@ -63,10 +63,10 @@ int reg(char* textToCheck, char* regExp)
     // Execute compiled regular expression
     reti = regexec(&compiledRegex, textToCheck, 0, NULL, 0);
     if (!reti) {
-        puts("Match");
+        //puts("Match");
         actualReturnValue = 1;
     } else if (reti == REG_NOMATCH) {
-        puts("No match");
+        //puts("No match");
         actualReturnValue = 0;
     } else {
         regerror(reti, &compiledRegex, messageBuffer, sizeof(messageBuffer));
