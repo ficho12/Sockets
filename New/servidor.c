@@ -352,7 +352,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
              }
 
 	//Creamos la String para el nombre del archivo de log dinámicamente con el numero de puerto que se recibe
-	snprintf(logFileName, sizeof(logFileName), "logs/peticiones.log", ntohs(clientaddr_in.sin_port));
+	snprintf(logFileName, sizeof(logFileName), "logs/peticiones.log");
 	//Abrimos el archvio de log, sino existe se crea
 	log = fopen(logFileName, "a");
 	if(log == NULL)
@@ -413,7 +413,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
-		aux = (char*) malloc(1024*sizeof(char));
+		//aux = (char*) malloc(1024*sizeof(char));
 
 		//Debug printf("%s\n",mensaje_r);
 		
@@ -486,71 +486,11 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 					smtp_number = 500;
 				break;
 		}
-		
-		/*
-		aux = strtok(mensaje_r, " ");
-
-		while(aux != NULL)
-		{
-			contador++;
-
-			if(contador == 1){
-				comando = aux;
-			}else if(contador == 2){
-
-				html = aux;
-
-			}else if(contador == 5){
-
-				tipo_aux = aux;
-
-			}
-
-			aux = strtok(NULL, " ");
-		}
-
-		tipo = strtok(tipo_aux, "<");
-
-		contador = 0;
-
-		if(strcmp(comando,"GET") == 0 ){
-			comando_b = 1;
-		}else{
-			comando_b = 0;
-		}
-
-		//Abrimos el html del mensaje
-		/* Probablemente esto no se utilice
-
-		if(comando_b)
-		{
-			snprintf(html2,sizeof(html2), "www%s",html);
-	
-			f = fopen (html2, "r");
-
-			if (f)
-			{
-				fseek (f, 0, SEEK_END);
-				length = ftell (f);
-				fseek (f, 0, SEEK_SET);
-				buffer = malloc (length);
-				if (buffer)
-				{
-					fread (buffer, 1, length, f);
-				}
-				fclose (f);
-				html_number = 200;
-				sprintf(longitud, "%lld", length);
-			}else
-				html_number = 404;
-		}
-		*/
 
 		//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
 		
 		//Reservamos memoria para los mensajes
 		respuesta = (char*) malloc ((length+1024)*sizeof(char));
-		cabecera = (char*) malloc ((length+1024)*sizeof(char));
 		paquete = (char*) malloc ((1024)*sizeof(char));
 		//	TODO: Bloquear acceso al fichero para evitar problemas de concurrencia al escribir el log.
 		//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
@@ -559,62 +499,31 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		switch(smtp_number){
 			case 220:	//Respuesta cuando el cliente realiza la conexión
 					printf("220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer); //buffer almacena la página web a devolver por lo que nosotros tendremos que poner el email
-					snprintf(cabecera,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>",hostname,tipo,longitud);
+					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
 				break;
 			case 221:	//Respuesta a la orden QUIT
 					printf("221 Cerrando el servicio\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
-					snprintf(cabecera,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>",hostname,tipo,longitud);
+					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
 				break;
 			case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
 					printf("250 OK\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
-					snprintf(cabecera,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>",hostname,tipo,longitud);
+					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
 				break;
 			case 354:	//Respuesta al envío de la orden DATA
 					printf("250 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
-					snprintf(cabecera,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>",hostname,tipo,longitud);
+					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
 				break;
 			case 500:	//Respuesta a errores de sintaxis en cualquier orden
 					printf("500 Error de sintaxis\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,buffer);
-					snprintf(cabecera,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>",hostname,tipo,longitud);
+					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
 				break;
 		}
 
-		length += 1024;
-		sprintf(longitud, "%lld", length);	//No me acuerdo que hace esto	//Edito: creo que le envía el número de bytes que le va a enviar al cliente para que sepa cuando parar.
 		//Edit2: Creo que esto se puede omitir ya que casi todos los mensajes son pequeños, menos el DATA. Así que mejor dejarlo probablemente
-		if (send(s, longitud, sizeof(char)*256, 0) < 0) {
+		if (send(s, respuesta, sizeof(respuesta), 0) < 0) {
 				fprintf(stderr, "%s: Connection aborted on error ",	comando);
 				exit(1);
 		}
-
-		paquete = respuesta;
-
-		//sleep(4);
-
-		//Aqui ya envia el mensaje
-		while(length2 < length){
-
-			if (send(s, paquete, 1024, 0) <= 0) {
-				fprintf(stderr, "%s: Connection aborted on error ",	comando);
-				break;
-			}
-
-			//paquete se va actualizando con los siguientes 1024bytes de respuesta
-			paquete += 1024;
-			length2 += 1024;
-		}
- 
-		//Reseteamos variables y liberamos memoria
-		length2 = 0;
-		length = 0;
-		free(respuesta);
-		free(mensaje_r);
-		free(aux);
 
 		//Comienzo LOG
 
@@ -626,8 +535,10 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		}
 		printf("\nLog abierto\n");
 
-		fputs(cabecera, log);
-		free(cabecera);
+		fputs(respuesta, log);
+		free(respuesta);
+		free(mensaje_r);
+		free(aux);
 		fseek (log, 0, SEEK_END);
 		fputs("\n", log);
 

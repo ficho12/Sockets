@@ -4,11 +4,11 @@
 //Mirar si hay que poner los caracteres \r\n
 //No creo porque esos caracteres son de finalizacion
 
-#define regHELO "HELO [a-zA-Z]+\.[a-zA-Z]+"
-#define regMAIL "MAIL FROM: <[a-zA-Z]+@[a-zA-Z]+\.[a-zA-Z]+>"
-#define regRCPT "RCPT TO: <[a-zA-Z]+@[a-zA-Z]+\.[a-zA-Z]+>"
+#define regHELO "HELO [a-zA-Z]+\\.[a-zA-Z]+"
+#define regMAIL "MAIL FROM: <[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]+>"
+#define regRCPT "RCPT TO: <[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]+>"
 #define regDATA "DATA"
-#define regPUNTO "\."
+#define regPUNTO "\\."
 #define regQUIT "QUIT"
 
 /*
