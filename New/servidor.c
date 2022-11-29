@@ -352,7 +352,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
              }
 
 	//Creamos la String para el nombre del archivo de log dinámicamente con el numero de puerto que se recibe
-	snprintf(logFileName, sizeof(logFileName), "logs/%d.log", ntohs(clientaddr_in.sin_port));
+	snprintf(logFileName, sizeof(logFileName), "logs/peticiones.log", ntohs(clientaddr_in.sin_port));
 	//Abrimos el archvio de log, sino existe se crea
 	log = fopen(logFileName, "a");
 	if(log == NULL)
@@ -394,7 +394,23 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	}
 
  	mensaje_r = (char *) malloc(1024);
-	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada
+	
+	/*	TODO:	Hacer el demonio
+
+		setpgrp();
+		switch(){
+			case -1:
+				//Error
+			case 0: 
+				//Bucle del select
+			default:
+				//Cerramos switch
+				//Terminamos
+		}
+	*/
+	//	TODO: 
+	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada. 
+	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
 		aux = (char*) malloc(1024*sizeof(char));
@@ -417,7 +433,8 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			5		leer datos hasta punto								no enviar nada
 			6 		.\r\n												send(250)
 			7		QUIT												send(221)
-		*/		
+		*/
+
 		switch(nivel){
 			case 0:		
 				smtp_number = 220;
@@ -535,7 +552,9 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		respuesta = (char*) malloc ((length+1024)*sizeof(char));
 		cabecera = (char*) malloc ((length+1024)*sizeof(char));
 		paquete = (char*) malloc ((1024)*sizeof(char));
-		
+		//	TODO: Bloquear acceso al fichero para evitar problemas de concurrencia al escribir el log.
+		//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
+		//	TODO: No hay que usar dos cadenas ya que si que se envia la cadena del mensaje, por lo tante es el mismo mensaje para el log y la cadena a enviar.
 		//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
 		switch(smtp_number){
 			case 220:	//Respuesta cuando el cliente realiza la conexión

@@ -11,20 +11,21 @@
 #define regPUNTO "\."
 #define regQUIT "QUIT"
 
+/*
 int useRegex(char* textToCheck) {
     regex_t compiledRegex;
     int reti;
     int actualReturnValue = -1;
     char messageBuffer[100];
 
-    /* Compile regular expression */
+    //Compile regular expression
     reti = regcomp(&compiledRegex, "H[a-zA-Z]LO [a-zA-Z]+\\.[a-zA-Z]+", REG_EXTENDED | REG_ICASE);
     if (reti) {
         fprintf(stderr, "Could not compile regex\n");
         return -2;
     }
 
-    /* Execute compiled regular expression */
+    // Execute compiled regular expression
     reti = regexec(&compiledRegex, textToCheck, 0, NULL, 0);
     if (!reti) {
         puts("Match");
@@ -38,27 +39,28 @@ int useRegex(char* textToCheck) {
         actualReturnValue = -3;
     }
 
-    /* Free memory allocated to the pattern buffer by regcomp() */
+    //Free memory allocated to the pattern buffer by regcomp()
     regfree(&compiledRegex);
     return actualReturnValue;
 }
+*/
 
 //Devuelve 1 si el REGEX es correcto y 0 si es falso y -2 o -3 si da error de REGEX
 int reg(char* textToCheck, char* regExp)
 {
-        regex_t compiledRegex;
+    regex_t compiledRegex;
     int reti;
     int actualReturnValue = -1;
     char messageBuffer[100];
 
-    /* Compile regular expression */
+    // Compile regular expression
     reti = regcomp(&compiledRegex, regExp, REG_EXTENDED | REG_ICASE);
     if (reti) {
         fprintf(stderr, "Could not compile regex\n");
         return -2;
     }
 
-    /* Execute compiled regular expression */
+    // Execute compiled regular expression
     reti = regexec(&compiledRegex, textToCheck, 0, NULL, 0);
     if (!reti) {
         puts("Match");
@@ -72,7 +74,7 @@ int reg(char* textToCheck, char* regExp)
         actualReturnValue = -3;
     }
 
-    /* Free memory allocated to the pattern buffer by regcomp() */
+    // Free memory allocated to the pattern buffer by regcomp()
     regfree(&compiledRegex);
     return actualReturnValue;
 }

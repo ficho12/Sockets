@@ -21,8 +21,10 @@
 #include <netdb.h>
 #include <string.h>
 #include <time.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-#define PUERTO 17278
+#define PUERTO 2873
 #define TAM_BUFFER 10
 
 /*
@@ -49,8 +51,23 @@ char *argv[];
 	int addrlen, i, j, errcode;
     /* This example uses TAM_BUFFER byte messages. */
 	char buf[TAM_BUFFER];
+	char logString[1024];
+	char logFileName[99];
+	FILE * log;
 
-	if (argc != 2) {
+	if(strcmp(argv[2],"TCP") == 0){
+
+		//hacer tcp
+
+	}else{
+
+		//hacer udp
+		printf("UDP no implementado");
+		exit(1);
+
+	}
+
+	if (argc != 4) {
 		fprintf(stderr, "Usage:  %s <remote host>\n", argv[0]);
 		exit(1);
 	}
@@ -62,6 +79,8 @@ char *argv[];
 		fprintf(stderr, "%s: unable to create socket\n", argv[0]);
 		exit(1);
 	}
+
+	mkdir("logs", S_IRWXU | S_IRWXG | S_IRWXO);
 	
 	/* clear out address structures */
 	memset ((char *)&myaddr_in, 0, sizeof(struct sockaddr_in));
@@ -125,7 +144,45 @@ char *argv[];
 	printf("Connected to %s on port %u at %s",
 			argv[1], ntohs(myaddr_in.sin_port), (char *) ctime(&timevar));
 
+	snprintf(logFileName, sizeof(logFileName), "logs/%d.txt", ntohs(clientaddr_in.sin_port));
+
+	FILE* input_file = fopen(filename, "r");
+
+	if (!input_file)
+        exit(EXIT_FAILURE);
+
+	char contents[255];
+	char delim[] = " ";
+	char tipo[2];
+	char *pagina;
+	char *get_s;
+	int get = 0;
+    size_t len = 0;
+	int cont = 1;
+	char *ptr,*ptr2;
+	char *mensaje;
+	char keep_alive[200];
+	int flag = 0;
+	char *respuesta;
+	long long length, length2 = 0, lengthRecibido;
+	int e;
+	char longitud[256];
+	FILE* log;
+	char fichero[256];
+
+	snprintf(fichero, sizeof(fichero),"logs/%d.txt",ntohs(myaddr_in.sin_port));
 	//TODO: Leer archivo de ordenes y enviar mensajes \r\l
+
+	/*
+		FILE * fp;
+		fp = fopen(argv[3], "z");
+		fscanf(fp, "", cad);
+		while(!feof(fp)){
+			send()
+			fscanf(fp,...)
+		}
+		fclose(fp);
+	*/
 	
 	for (i=1; i<=5; i++) {
 		*buf = i;
