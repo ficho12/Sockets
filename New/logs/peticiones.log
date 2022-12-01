@@ -1,142 +1,19 @@
-Comunicación Realizada. Fecha: Tue Nov 29 20:05:35 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 59468Comunicación Realizada. Fecha: Tue Nov 29 20:05:35 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 59454HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>HELO usal.es
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>HOLA usal.es
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>MAIL FROM <pepe>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>HELO usal.es
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>MAIL FROM: <Smith@Alpha.ARPA>
-
-
-Comunicación Realizada. Fecha: Tue Nov 29 20:05:35 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 59442HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>MAIL FROM: <Smith@Alpha.ARPA>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO: <Jones@Beta.ARPA>
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>DATA
-
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>HELO usal.es
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO: <Brown@Beta.ARPA>
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO: <Jones@Beta.ARPA>
-
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO: <Jones@Beta.ARPA>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>DATA
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>DATOS
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Texto de mi correo en ordenes1.txt
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>MAIL FROM: <Smith@Alpha.ARPA>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>DATA
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Linea 2 de mi correo en ordenes1.txt
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>.
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Texto de mi correo 2.
-
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>QUIT
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Linea 2 de mi correo en ordenes2.txt
-
-
-Comunicación Finalizada. Fecha: Tue Nov 29 20:05:35 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 59454HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO: <Jones@Beta.ARPA>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>.
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>MAIL FROM: <manolo.usal.es>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO: <Brown@Beta.ARPA>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>MAIL FROM: <manolo@usal.es>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>DATA
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO <cristina@usal.es>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Texto de mi primer correo.
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO: <cristina@usal.es>
-
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>DATA
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Linea 2 de mi correo en ordenes.txt
-
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>.
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Texto de mi correo 22.
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>MAIL FROM: <pp@usal.es>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>DATA
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>RCPT TO: <juan@usal.es>
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Linea 2 de mi correo en ordenes2.txt
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>DATA
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>.
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Texto de mi segundo correo.
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>Linea 2 de mi segundo correo en ordenes.txt
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>.
-
-
-HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>QUIT
-
-Comunicación Finalizada. Fecha: Tue Nov 29 20:05:36 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 59468HTTP/1.1 200 OK<CR><LF>Server: localhost<CR><LF>Connection: (null)<CR><LF>Content-Length: <CR><LF>QUIT
-
-Comunicación Finalizada. Fecha: Tue Nov 29 20:05:36 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 59442
+Comunicación Realizada. Fecha: Thu Dec  1 13:18:30 2022
+ Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 54986 220 Servicio de transferencia simple de correo preparado
+500 Error de sintaxis
+250 OK
+250 OK
+250 OK
+354 Comenzando con el texto del correo, finalice con .
+500 Error de sintaxis
+500 Error de sintaxis
+500 Error de sintaxis
+500 Error de sintaxis
+500 Error de sintaxis
+500 Error de sintaxis
+250 OK
+500 Error de sintaxis
+500 Error de sintaxis
+221 Cerrando el servicio
+Comunicación Finalizada. Fecha: Thu Dec  1 13:18:30 2022
+ Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 54986 

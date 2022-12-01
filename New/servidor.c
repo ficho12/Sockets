@@ -35,6 +35,12 @@
 #define BUFFERSIZE	1024	/* maximum size of packets to be received */
 #define TAM_BUFFER 10
 #define MAXHOST 128
+#define resp220 "220 Servicio de transferencia simple de correo preparado\r\n"
+#define resp221 "221 Cerrando el servicio\r\n"
+#define resp250 "250 OK\r\n"
+#define resp354 "354 Comenzando con el texto del correo, finalice con .\r\n"
+#define resp500 "500 Error de sintaxis\r\n"
+
 
 extern int errno;
 
@@ -360,26 +366,26 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		fprintf(stdout,"Error al crear archivo log.\n");
 		exit(EXIT_FAILURE);
 	}
-	printf("\nLog abierto\n");
+	//printf("\nLog abierto\n");
 
     /* Log a startup message. */
     time (&timevar);
 	//Guardamos la string del primer mensaje de log de Comunicación Realizada
-	snprintf(logString,sizeof(logString), "Comunicación Realizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
+	snprintf(logString,sizeof(logString), "Comunicación Realizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d ", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
 
 	//Escribimos la String en el archivo de log
 	fputs(logString, log);
 	
 	//Cerramos archivo de log
     fclose(log);
-	printf("\nLog Cerrado\n");
+	//printf("\nLog Cerrado\n");
 	/* The port number must be converted first to host byte
 	* order before printing.  On most hosts, this is not
 	* necessary, but the ntohs() call is included here so
 	* that this program could easily be ported to a host
 	* that does require it.
 	*/
-	printf("Startup from %s port %u at %s",
+	printf("Startup from %s port %u at %s\n",
 		hostname, ntohs(clientaddr_in.sin_port), (char *) ctime(&timevar));
 	
 		/* Set the socket for a lingering, graceful close.
@@ -414,7 +420,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
 		//aux = (char*) malloc(1024*sizeof(char));
-
+		printf("Recibido: %s\n", mensaje_r);
 		//Debug printf("%s\n",mensaje_r);
 		
 		//TODO: Leer y separar cadenas del mensaje recibido para saber que mensaje devolver al cliente
@@ -490,7 +496,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
 		
 		//Reservamos memoria para los mensajes
-		respuesta = (char*) malloc ((length+1024)*sizeof(char));
+		respuesta = (char*) malloc ((1024)*sizeof(char));
 		paquete = (char*) malloc ((1024)*sizeof(char));
 		//	TODO: Bloquear acceso al fichero para evitar problemas de concurrencia al escribir el log.
 		//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
@@ -498,29 +504,29 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
 		switch(smtp_number){
 			case 220:	//Respuesta cuando el cliente realiza la conexión
-					printf("220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
+					printf("220 Servicio de transferencia simple de correo preparado\r\n");	//Cambiar Respuesta
+					snprintf(respuesta,1024*sizeof(char),"%s",resp220);		// TODO: sizeof(resp220)
 				break;
 			case 221:	//Respuesta a la orden QUIT
-					printf("221 Cerrando el servicio\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
+					printf("221 Cerrando el servicio\r\n");	//Cambiar Respuesta
+					snprintf(respuesta,1024*sizeof(char),"%s",resp221);
 				break;
 			case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
-					printf("250 OK\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
+					printf("250 OK\r\n");	//Cambiar Respuesta
+					snprintf(respuesta,1024*sizeof(char),"%s",resp250);
 				break;
 			case 354:	//Respuesta al envío de la orden DATA
-					printf("250 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
+					printf("354 Comenzando con el texto del correo, finalice con .\r\n");	//Cambiar Respuesta
+					snprintf(respuesta,1024*sizeof(char),"%s",resp354);
 				break;
 			case 500:	//Respuesta a errores de sintaxis en cualquier orden
-					printf("500 Error de sintaxis\n");	//Cambiar Respuesta
-					snprintf(respuesta,length+1024, "HTTP/1.1 200 OK<CR><LF>Server: %s<CR><LF>Connection: %s<CR><LF>Content-Length: %s<CR><LF>%s",hostname,tipo,longitud,mensaje_r);
+					printf("500 Error de sintaxis\r\n");	//Cambiar Respuesta
+					snprintf(respuesta,1024*sizeof(char),"%s",resp500);
 				break;
 		}
 
 		//Edit2: Creo que esto se puede omitir ya que casi todos los mensajes son pequeños, menos el DATA. Así que mejor dejarlo probablemente
-		if (send(s, respuesta, sizeof(respuesta), 0) < 0) {
+		if (send(s, respuesta, 1024, 0) < 0) {
 				fprintf(stderr, "%s: Connection aborted on error ",	comando);
 				exit(1);
 		}
@@ -530,17 +536,17 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		log = fopen(logFileName, "a");
 		if(log == NULL)
 		{
-			fprintf(stdout,"Error al abrir el archivo log %d.\n", logFileName);
+			fprintf(stdout,"Error al abrir el archivo log %s.\n", logFileName);
 			exit(EXIT_FAILURE);
 		}
-		printf("\nLog abierto\n");
+		//printf("\nLog abierto\n");
 
 		fputs(respuesta, log);
 		free(respuesta);
 		free(mensaje_r);
-		free(aux);
-		fseek (log, 0, SEEK_END);
-		fputs("\n", log);
+		//free(aux);
+		//fseek (log, 0, SEEK_END);
+		//fputs("\n", log);
 
 		// FIXME: Esto no se porque se pone aquí. Debería ponerse fuera de la función pero creo que no funcionaba por algún motivo que desconozco
 		/*
@@ -596,19 +602,19 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	log = fopen(logFileName, "a");	//a --> Append. Se escribe al final del archivo
 	if(log == NULL)
 	{
-		fprintf(stdout,"Error al abrir el archivo log %d.\n", logFileName);
+		fprintf(stdout,"Error al abrir el archivo log %s.\n", logFileName);
 		exit(EXIT_FAILURE);
 	}
-	printf("\nLog abierto\n");
+	//printf("\nLog abierto\n");
 
-	snprintf(logString,sizeof(logString), "Comunicación Finalizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
+	snprintf(logString,sizeof(logString), "Comunicación Finalizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d ", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
 
 	//Escribimos la String en el archivo de log
 	fputs(logString, log);
 	
 	//Cerramos archivo de log
     fclose(log);
-	printf("\nLog Cerrado\n");
+	//printf("\nLog Cerrado\n");
 	
 }
 

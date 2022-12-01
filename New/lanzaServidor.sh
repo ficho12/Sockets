@@ -6,8 +6,8 @@
 ./clientcp localhost TCP ordenes.txt &
 ./clientcp localhost TCP ordenes1.txt &
 ./clientcp localhost TCP ordenes2.txt &
-./clientcp localhost UDP ordenes.txt &
-./clientcp localhost UDP ordenes1.txt &
-./clientcp localhost UDP ordenes2.txt &
+#./clientcp localhost UDP ordenes.txt &
+#./clientcp localhost UDP ordenes1.txt &
+#./clientcp localhost UDP ordenes2.txt &
 
  

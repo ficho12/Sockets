@@ -23,6 +23,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #define PUERTO 2873
 #define TAM_BUFFER 10
@@ -155,7 +156,7 @@ char *argv[];
 		fprintf(stdout,"Error al crear archivo log.\n");
 		exit(EXIT_FAILURE);
 	}
-	printf("\nLog abierto\n");
+	//printf("\nLog abierto\n");
 
 	FILE* input_file = fopen(filename, "r");
 
@@ -167,7 +168,7 @@ char *argv[];
 
 
 	char *contents;
-	size_t cont_size = 256;
+	size_t cont_size = 1024*sizeof(char);
 	char delim[] = " ";
 	char tipo[2];
 	char *pagina;
@@ -198,30 +199,32 @@ char *argv[];
 		fclose(fp);
 	*/
 
-	contents = (char*) malloc ((256)*sizeof(char));
-
+	contents = (char*) malloc ((1024)*sizeof(char));
+	printf("Aquí\n");
 
 	while(getline(&contents,&cont_size,input_file) != -1)
 	{
 		snprintf(mensaje, 1024,"%s\r\n",contents);
 
 		if (send(s, mensaje, 1024, 0) == -1) {
-			fprintf(stderr, "%s: Connection aborted on error ",	get_s);
+			fprintf(stderr, "%s: Connection aborted on error %s",get_s,strerror(errno));
 			exit(1);
 		}
 
 		respuesta = (char*) malloc ((1024)*sizeof(char));
 
-		if(recv(s, respuesta, sizeof(respuesta), 0) < 0){
-			fprintf(stderr, "Connection aborted on error ");
+		if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
+			fprintf(stderr, "Connection aborted on error %s", strerror(errno));
 			exit(1);
 		}
+
+		printf("Respuesta: %s\n", respuesta);
 
 		fputs(respuesta, log);
 		fseek (log, 0, SEEK_END);
 		free(respuesta);
 		free(contents);
-		contents = (char*) malloc ((256)*sizeof(char));
+		contents = (char*) malloc ((1024)*sizeof(char));
 	}
 
 	fclose(input_file);
