@@ -58,6 +58,28 @@ char *argv[];
 	char logFileName[99];
 	FILE * log;
 
+	//Nuevas variables
+	char *contents;
+	size_t cont_size = 512*sizeof(char);
+	char delim[] = " ";
+	char tipo[2];
+	char *pagina;
+	char *get_s;
+	int get = 0;
+    size_t len = 0;
+	int cont = 1;
+	char *ptr,*ptr2;
+	char *mensaje;
+	char keep_alive[200];
+	int flag = 0;
+	char *respuesta;
+	long long length, length2 = 0, lengthRecibido;
+	int e;
+	char longitud[256];
+	char fichero[256];
+
+	respuesta = (char*) malloc ((1024)*sizeof(char));
+
 	if(strcmp(argv[2],"TCP") == 0){
 
 		//hacer tcp
@@ -136,7 +158,14 @@ char *argv[];
 		exit(1);
 	 }
 
-	/* Print out a startup message for the user. */
+	if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
+		fprintf(stderr, "Connection aborted on error %s", strerror(errno));
+		exit(1);
+	}
+
+	printf("Respuesta: %s\n", respuesta);
+
+	 /* Print out a startup message for the user. */
 	time(&timevar);
 	/* The port number must be converted first to host byte
 	 * order before printing.  On most hosts, this is not
@@ -166,25 +195,9 @@ char *argv[];
 		exit(EXIT_FAILURE);
 	}
 
-
-	char *contents;
-	size_t cont_size = 1024*sizeof(char);
-	char delim[] = " ";
-	char tipo[2];
-	char *pagina;
-	char *get_s;
-	int get = 0;
-    size_t len = 0;
-	int cont = 1;
-	char *ptr,*ptr2;
-	char *mensaje;
-	char keep_alive[200];
-	int flag = 0;
-	char *respuesta;
-	long long length, length2 = 0, lengthRecibido;
-	int e;
-	char longitud[256];
-	char fichero[256];
+	fputs(respuesta, log);
+	//fseek (log, 0, SEEK_END);
+	free(respuesta);
 
 	//TODO: Leer archivo de ordenes y enviar mensajes \r\l
 
@@ -202,9 +215,14 @@ char *argv[];
 	contents = (char*) malloc ((1024)*sizeof(char));
 	printf("Aquí\n");
 
+	// TODO: Se queda pillado en el bucle
 	while(getline(&contents,&cont_size,input_file) != -1)
 	{
+		mensaje = (char*) malloc ((1024)*sizeof(char));
+		
 		snprintf(mensaje, 1024,"%s\r\n",contents);
+
+		printf("%s\n",mensaje);
 
 		if (send(s, mensaje, 1024, 0) == -1) {
 			fprintf(stderr, "%s: Connection aborted on error %s",get_s,strerror(errno));

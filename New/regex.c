@@ -8,7 +8,7 @@
 #define regMAIL "MAIL FROM: <[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]+>"
 #define regRCPT "RCPT TO: <[a-zA-Z]+@[a-zA-Z]+\\.[a-zA-Z]+>"
 #define regDATA "DATA"
-#define regPUNTO "\\."
+#define regPUNTO "^\.\\r\\n$"
 #define regQUIT "QUIT"
 
 /*

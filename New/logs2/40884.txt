@@ -1,0 +1,12 @@
+220 Servicio de transferencia simple de correo preparado
+250 OK
+500 Error de sintaxis
+250 OK
+250 OK
+250 OK
+354 Comenzando con el texto del correo, finalice con .
+500 Error de sintaxis
+500 Error de sintaxis
+500 Error de sintaxis
+500 Error de sintaxis
+500 Error de sintaxis

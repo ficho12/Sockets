@@ -10,7 +10,7 @@
  *
  *	Autores:
  *	Fiz Rey Armesto 		34292873B
- *	Mario S�nchez L�pez 	70913738T
+ *	
  *
  */
 
@@ -327,7 +327,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	char logString[1024];
 	char logFileName[99];
 	int contador = 0;
-	int nivel = 0;
+	int nivel = 1;
 	int case4 = 0;
 	
 	int smtp_number = 500;
@@ -400,6 +400,16 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	}
 
  	mensaje_r = (char *) malloc(1024);
+	respuesta = (char*) malloc ((1024)*sizeof(char));
+
+	//Respuesta cuando el cliente realiza la conexión
+	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
+	snprintf(respuesta,1024*sizeof(char),"%s",resp220);		// TODO: sizeof(resp220)
+
+	if (send(s, respuesta, 1024, 0) < 0) {
+			fprintf(stderr, "%s: Connection aborted on error ",	comando);
+			exit(1);
+	}
 	
 	/*	TODO:	Hacer el demonio
 
@@ -420,12 +430,12 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
 		//aux = (char*) malloc(1024*sizeof(char));
-		printf("Recibido: %s\n", mensaje_r);
+		printf("Recibido: %s   Nivel: %d\n", mensaje_r, nivel);
 		//Debug printf("%s\n",mensaje_r);
 		
 		//TODO: Leer y separar cadenas del mensaje recibido para saber que mensaje devolver al cliente
 
-		smtp_number = 500;
+		//smtp_number = 500;
 
 		//bucle
 		//TODO: Hacer un switch con int
@@ -437,28 +447,24 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			3		RCPT TO:	De 3 puede pasar a 3 otra vez o a 4		send(250)
 			4		DATA												send(354)
 			5		leer datos hasta punto								no enviar nada
-			6 		.\r\n												send(250)
+			6 		.\r\n		De 6 puede volver a 2					send(250)
 			7		QUIT												send(221)
 		*/
 
 		switch(nivel){
-			case 0:		
-				smtp_number = 220;
-				nivel++;
-				break;
 			case 1:		//REGEX HELO <dominio-emisor>
-				if(reg(mensaje_r,regHELO))
+				if(reg(mensaje_r,regHELO)){
 					smtp_number = 250;
-				else
+					nivel++;
+				}else
 					smtp_number = 500;
-				nivel++;
 				break;
 			case 2:		//REGEX MAIL FROM <reverse-path>
-				if(reg(mensaje_r,regMAIL))
+				if(reg(mensaje_r,regMAIL)){
 					smtp_number = 250;
-				else
+					nivel++;
+				}else
 					smtp_number = 500;
-				nivel++;
 				break;
 			case 3:		//REGEX RCPT <fordward-path>
 				if(reg(mensaje_r,regRCPT))
@@ -470,14 +476,15 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 						nivel+=2;
 					}else
 						smtp_number = 500;
-
 				case4 = 1; //bool case4 = true;
 				break;
 			case 5:		//REGEX .\r\n
-				if(reg(mensaje_r,regPUNTO))
+				if(reg(mensaje_r,regPUNTO))		// TODO: REGEX no funciona
 					smtp_number = 500;
-				else
+				else{
+					smtp_number = 0;
 					nivel++;
+				}
 				break;
 			case 6:		//REGEX .\r\n
 				if(reg(mensaje_r,regPUNTO)){
@@ -488,90 +495,68 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			case 7:		//REGEX QUIT
 				if(reg(mensaje_r,regQUIT))
 					smtp_number = 221;
-				else
-					smtp_number = 500;
+				else if(reg(mensaje_r,regMAIL)){
+						smtp_number = 250;
+						nivel = 3;
+					}else
+						smtp_number = 500;
 				break;
 		}
 
-		//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
-		
-		//Reservamos memoria para los mensajes
-		respuesta = (char*) malloc ((1024)*sizeof(char));
-		paquete = (char*) malloc ((1024)*sizeof(char));
-		//	TODO: Bloquear acceso al fichero para evitar problemas de concurrencia al escribir el log.
-		//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
-		//	TODO: No hay que usar dos cadenas ya que si que se envia la cadena del mensaje, por lo tante es el mismo mensaje para el log y la cadena a enviar.
-		//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
-		switch(smtp_number){
-			case 220:	//Respuesta cuando el cliente realiza la conexión
-					printf("220 Servicio de transferencia simple de correo preparado\r\n");	//Cambiar Respuesta
-					snprintf(respuesta,1024*sizeof(char),"%s",resp220);		// TODO: sizeof(resp220)
-				break;
-			case 221:	//Respuesta a la orden QUIT
-					printf("221 Cerrando el servicio\r\n");	//Cambiar Respuesta
-					snprintf(respuesta,1024*sizeof(char),"%s",resp221);
-				break;
-			case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
-					printf("250 OK\r\n");	//Cambiar Respuesta
-					snprintf(respuesta,1024*sizeof(char),"%s",resp250);
-				break;
-			case 354:	//Respuesta al envío de la orden DATA
-					printf("354 Comenzando con el texto del correo, finalice con .\r\n");	//Cambiar Respuesta
-					snprintf(respuesta,1024*sizeof(char),"%s",resp354);
-				break;
-			case 500:	//Respuesta a errores de sintaxis en cualquier orden
-					printf("500 Error de sintaxis\r\n");	//Cambiar Respuesta
-					snprintf(respuesta,1024*sizeof(char),"%s",resp500);
-				break;
-		}
-
-		//Edit2: Creo que esto se puede omitir ya que casi todos los mensajes son pequeños, menos el DATA. Así que mejor dejarlo probablemente
-		if (send(s, respuesta, 1024, 0) < 0) {
-				fprintf(stderr, "%s: Connection aborted on error ",	comando);
-				exit(1);
-		}
-
-		//Comienzo LOG
-
-		log = fopen(logFileName, "a");
-		if(log == NULL)
+		if (smtp_number != 0)
 		{
-			fprintf(stdout,"Error al abrir el archivo log %s.\n", logFileName);
-			exit(EXIT_FAILURE);
-		}
-		//printf("\nLog abierto\n");
+			//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
+			//Reservamos memoria para los mensajes
+			respuesta = (char*) malloc ((1024)*sizeof(char));
+			//	TODO: Bloquear acceso al fichero para evitar problemas de concurrencia al escribir el log.
+			//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
+			//	TODO: No hay que usar dos cadenas ya que si que se envia la cadena del mensaje, por lo tante es el mismo mensaje para el log y la cadena a enviar.
+			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
+			switch(smtp_number){
+				case 221:	//Respuesta a la orden QUIT
+						printf("Respuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
+						snprintf(respuesta,1024*sizeof(char),"%s",resp221);
+					break;
+				case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
+						printf("Respuesta: 250 OK\n");	//Cambiar Respuesta
+						snprintf(respuesta,1024*sizeof(char),"%s",resp250);
+					break;
+				case 354:	//Respuesta al envío de la orden DATA
+						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
+						snprintf(respuesta,1024*sizeof(char),"%s",resp354);
+					break;
+				case 500:	//Respuesta a errores de sintaxis en cualquier orden
+						printf("Respuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
+						snprintf(respuesta,1024*sizeof(char),"%s",resp500);
+					break;
+			}
 
-		fputs(respuesta, log);
-		free(respuesta);
-		free(mensaje_r);
-		//free(aux);
-		//fseek (log, 0, SEEK_END);
-		//fputs("\n", log);
+			//Edit2: Creo que esto se puede omitir ya que casi todos los mensajes son pequeños, menos el DATA. Así que mejor dejarlo probablemente
+			if (send(s, respuesta, 1024, 0) < 0) {
+					fprintf(stderr, "%s: Connection aborted on error ",	comando);
+					exit(1);
+			}
 
-		// FIXME: Esto no se porque se pone aquí. Debería ponerse fuera de la función pero creo que no funcionaba por algún motivo que desconozco
-		/*
-		if (strcmp(tipo, "keep-alive") !=0)
-		{
-			fseek (log, 0, SEEK_END);
-			snprintf(logString,sizeof(logString), "Fecha: %s Ejecutable: client Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d\n\n", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
-			fputs(logString, log);
+			//Comienzo LOG
+			log = fopen(logFileName, "a");
+			if(log == NULL)
+			{
+				fprintf(stdout,"Error al abrir el archivo log %s.\n", logFileName);
+				exit(EXIT_FAILURE);
+			}
+			//printf("\nLog abierto\n");
+
+			fputs(respuesta, log);
 			fclose(log);
-			close(s);
-			time (&timevar);
-			printf("Completed %s port %u, %d requests, at %s\n",
-				hostname, ntohs(clientaddr_in.sin_port), reqcnt, (char *) ctime(&timevar));
-			exit(1);
-
+			free(respuesta);
 		}else{
-			//lol
-
-
+			printf("0 DATA. No se envía respuesta");		// No se envía respuesta
 		}
-		*/
 
-    	fclose(log);
+		free(mensaje_r);
+		mensaje_r = (char *) malloc(1024*sizeof(char));
 
-		 mensaje_r = (char *) malloc(1024*sizeof(char));
+		//printf("\n");
   
 	}
 
