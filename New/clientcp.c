@@ -215,14 +215,15 @@ char *argv[];
 	contents = (char*) malloc ((1024)*sizeof(char));
 	printf("Aquí\n");
 
-	// TODO: Se queda pillado en el bucle
+	// TODO: Se queda pillado en el bucle.
+	// TODO: Preguntar, hay que enviar 250 cada vez que se recibe una parte del cuerpo del correo?
 	while(getline(&contents,&cont_size,input_file) != -1)
 	{
 		mensaje = (char*) malloc ((1024)*sizeof(char));
 		
 		snprintf(mensaje, 1024,"%s\r\n",contents);
 
-		printf("%s\n",mensaje);
+		printf("%s",mensaje);
 
 		if (send(s, mensaje, 1024, 0) == -1) {
 			fprintf(stderr, "%s: Connection aborted on error %s",get_s,strerror(errno));
@@ -236,7 +237,7 @@ char *argv[];
 			exit(1);
 		}
 
-		printf("Respuesta: %s\n", respuesta);
+		printf("Respuesta: %s", respuesta);
 
 		fputs(respuesta, log);
 		fseek (log, 0, SEEK_END);

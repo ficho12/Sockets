@@ -430,7 +430,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
 		//aux = (char*) malloc(1024*sizeof(char));
-		printf("Recibido: %s   Nivel: %d\n", mensaje_r, nivel);
+		printf("Recibido: %s   Nivel: %d", mensaje_r, nivel);
 		//Debug printf("%s\n",mensaje_r);
 		
 		//TODO: Leer y separar cadenas del mensaje recibido para saber que mensaje devolver al cliente
@@ -479,18 +479,21 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				case4 = 1; //bool case4 = true;
 				break;
 			case 5:		//REGEX .\r\n
-				if(reg(mensaje_r,regPUNTO))		// TODO: REGEX no funciona
-					smtp_number = 500;
-				else{
-					smtp_number = 0;
+				//if(reg(mensaje_r,regPUNTO))		// TODO: REGEX no funciona
+				//if(strcmp(mensaje_r,".") == 0){		// FIXME: Aquí el strcmp parece que funciona
+				if (strstr(mensaje_r, ".\r\n") != NULL) {
+					smtp_number = 500;	
+				}else{
+					smtp_number = 250;		//0
 					nivel++;
 				}
 				break;
 			case 6:		//REGEX .\r\n
-				if(reg(mensaje_r,regPUNTO)){
-					smtp_number = 250;
+				//if(reg(mensaje_r,regPUNTO))	// TODO: REGEX no funciona
+				if (strstr(mensaje_r, ".\r\n") != NULL) {	// FIXME: Aquí el strcmp ya no funciona XDDDDDDDDDDDD
 					nivel++;
 				}
+				smtp_number = 250;
 				break;
 			case 7:		//REGEX QUIT
 				if(reg(mensaje_r,regQUIT))
@@ -514,19 +517,19 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
 			switch(smtp_number){
 				case 221:	//Respuesta a la orden QUIT
-						printf("Respuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
+						printf("\tRespuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
 						snprintf(respuesta,1024*sizeof(char),"%s",resp221);
 					break;
 				case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
-						printf("Respuesta: 250 OK\n");	//Cambiar Respuesta
+						printf("\tRespuesta: 250 OK\n");	//Cambiar Respuesta
 						snprintf(respuesta,1024*sizeof(char),"%s",resp250);
 					break;
 				case 354:	//Respuesta al envío de la orden DATA
-						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
+						printf("\tRespuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
 						snprintf(respuesta,1024*sizeof(char),"%s",resp354);
 					break;
 				case 500:	//Respuesta a errores de sintaxis en cualquier orden
-						printf("Respuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
+						printf("\tRespuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
 						snprintf(respuesta,1024*sizeof(char),"%s",resp500);
 					break;
 			}
