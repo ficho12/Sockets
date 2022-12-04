@@ -157,6 +157,8 @@ char *argv[];
 		 * with that terminal as its control terminal.  It is
 		 * always best for the parent to do the setpgrp.
 		 */
+
+	//TODO: Semaforo para hacer una zona exclusiva para el acceso al archivo de log en los hijos
 	setpgrp();
 
 	switch (fork()) {
@@ -410,20 +412,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			fprintf(stderr, "%s: Connection aborted on error ",	comando);
 			exit(1);
 	}
-	
-	/*	TODO:	Hacer el demonio
 
-		setpgrp();
-		switch(){
-			case -1:
-				//Error
-			case 0: 
-				//Bucle del select
-			default:
-				//Cerramos switch
-				//Terminamos
-		}
-	*/
 	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada. 
 	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
@@ -432,12 +421,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		printf("Recibido: %s   Nivel: %d", mensaje_r, nivel);
 		//Debug printf("%s\n",mensaje_r);
 		
-		//TODO: Leer y separar cadenas del mensaje recibido para saber que mensaje devolver al cliente
-
-		//smtp_number = 500;
-
 		//bucle
-		//TODO: Hacer un switch con int
 		/*	Refenciando el diagrama de las diapositivas
 			Nivel	Client												Server
 			0		Conexion											send(220)
@@ -449,7 +433,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			6 		.\r\n		De 6 puede volver a 2					send(250)
 			7		QUIT												send(221)
 		*/
-		// FIXME: REGEX en ordenes1 para DATA está mal
 		switch(nivel){
 			case 1:		//REGEX HELO <dominio-emisor>
 				if(reg(mensaje_r,regHELO)){
@@ -480,8 +463,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				case4 = 1; //bool case4 = true;
 				break;
 			case 5:		//REGEX .\r\n
-				//if(reg(mensaje_r,regPUNTO))		// TODO: REGEX no funciona
-				//if(strcmp(mensaje_r,".") == 0){		// FIXME: Aquí el strcmp parece que funciona
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 5) ) {
 					printf("\tLength: %d", strlen(mensaje_r));
 					smtp_number = 500;	
@@ -491,8 +472,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				}
 				break;
 			case 6:		//REGEX .\r\n
-				//if(reg(mensaje_r,regPUNTO))	// TODO: REGEX no funciona
-				//if(strcmp(mensaje_r,".") == 0){		// FIXME: Aquí el strcmp parece que funciona
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 5) ) {
 					printf("\tLength: %d", strlen(mensaje_r));
 					nivel++;
@@ -538,7 +517,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 					break;
 			}
 
-			//Edit2: Creo que esto se puede omitir ya que casi todos los mensajes son pequeños, menos el DATA. Así que mejor dejarlo probablemente
 			if (send(s, respuesta, 1024, 0) < 0) {
 					fprintf(stderr, "%s: Connection aborted on error ",	comando);
 					exit(1);
@@ -563,8 +541,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		free(mensaje_r);
 		mensaje_r = (char *) malloc(1024*sizeof(char));
 
-		//printf("\n");
-  
 	}
 
 	/*--------------------------------------------------------------------------------*/
