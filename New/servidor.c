@@ -424,7 +424,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				//Terminamos
 		}
 	*/
-	//	TODO: 
 	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada. 
 	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
@@ -450,7 +449,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			6 		.\r\n		De 6 puede volver a 2					send(250)
 			7		QUIT												send(221)
 		*/
-
+		// FIXME: REGEX en ordenes1 para DATA está mal
 		switch(nivel){
 			case 1:		//REGEX HELO <dominio-emisor>
 				if(reg(mensaje_r,regHELO)){
@@ -469,13 +468,15 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			case 3:		//REGEX RCPT <fordward-path>
 				if(reg(mensaje_r,regRCPT))
 					smtp_number = 250;
-				else if(case4)
+				else if(case4){
 					//REGEX DATA
 					if(reg(mensaje_r,regDATA)){
 						smtp_number = 354;
 						nivel+=2;
 					}else
 						smtp_number = 500;
+				}else
+					smtp_number = 500;
 				case4 = 1; //bool case4 = true;
 				break;
 			case 5:		//REGEX .\r\n

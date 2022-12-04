@@ -8,8 +8,8 @@ DATA                                            354
 Texto de mi correo 2.
 Linea 2 de mi correo en ordenes2.txt
 .                                               250
-MAIL FROM: <manolo.usal.es>                     250
-MAIL FROM: <manolo@usal.es>                     500
+MAIL FROM: <manolo.usal.es>                     500
+MAIL FROM: <manolo@usal.es>                     250
 RCPT TO <cristina@usal.es>                      500
 RCPT TO: <cristina@usal.es>                     250
 DATA                                            354
