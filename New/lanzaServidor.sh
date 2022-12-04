@@ -9,5 +9,3 @@
 #./clientcp localhost UDP ordenes.txt &
 #./clientcp localhost UDP ordenes1.txt &
 #./clientcp localhost UDP ordenes2.txt &
-
- 

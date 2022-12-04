@@ -187,7 +187,7 @@ char *argv[];
             perror(" sigaction(SIGCHLD)");
             fprintf(stderr,"%s: unable to register the SIGCHLD signal\n", argv[0]);
             exit(1);
-            }
+        }
             
 		    /* Registrar SIGTERM para la finalizacion ordenada del programa servidor */
         vec.sa_handler = (void *) finalizar;
@@ -196,7 +196,7 @@ char *argv[];
             perror(" sigaction(SIGTERM)");
             fprintf(stderr,"%s: unable to register the SIGTERM signal\n", argv[0]);
             exit(1);
-            }
+        }
         
 		while (!FIN) {
             /* Meter en el conjunto de sockets los sockets UDP y TCP */
@@ -481,7 +481,8 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			case 5:		//REGEX .\r\n
 				//if(reg(mensaje_r,regPUNTO))		// TODO: REGEX no funciona
 				//if(strcmp(mensaje_r,".") == 0){		// FIXME: Aquí el strcmp parece que funciona
-				if (strstr(mensaje_r, ".\r\n") != NULL) {
+				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 5) ) {
+					printf("\tLength: %d", strlen(mensaje_r));
 					smtp_number = 500;	
 				}else{
 					smtp_number = 250;		//0
@@ -490,7 +491,9 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			case 6:		//REGEX .\r\n
 				//if(reg(mensaje_r,regPUNTO))	// TODO: REGEX no funciona
-				if (strstr(mensaje_r, ".\r\n") != NULL) {	// FIXME: Aquí el strcmp ya no funciona XDDDDDDDDDDDD
+				//if(strcmp(mensaje_r,".") == 0){		// FIXME: Aquí el strcmp parece que funciona
+				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 5) ) {
+					printf("\tLength: %d", strlen(mensaje_r));
 					nivel++;
 				}
 				smtp_number = 250;
