@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include "regex.c"
 
 #define PUERTO 2873
 #define TAM_BUFFER 10
@@ -77,6 +78,7 @@ char *argv[];
 	int e;
 	char longitud[256];
 	char fichero[256];
+	int cuerpoCorreo = 0;
 
 	respuesta = (char*) malloc ((1024)*sizeof(char));
 
@@ -213,38 +215,59 @@ char *argv[];
 	*/
 
 	contents = (char*) malloc ((1024)*sizeof(char));
-	printf("Aquí\n");
+	//printf("Aquí\n");
 
-	// TODO: Se queda pillado en el bucle.
-	// TODO: Preguntar, hay que enviar 250 cada vez que se recibe una parte del cuerpo del correo?
 	while(getline(&contents,&cont_size,input_file) != -1)
 	{
-		mensaje = (char*) malloc ((1024)*sizeof(char));
+		//mensaje = (char*) malloc ((1024)*sizeof(char));
 		
-		snprintf(mensaje, 1024,"%s\r\n",contents);
+		//snprintf(mensaje, 1024,"%s\r\n",contents);
 
-		printf("%s",mensaje);
+		printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
 
-		if (send(s, mensaje, 1024, 0) == -1) {
+		//printf("%s",mensaje);
+
+		if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
+			cuerpoCorreo = 0;
+
+		if (send(s, contents, 1024, 0) == -1) {
 			fprintf(stderr, "%s: Connection aborted on error %s",get_s,strerror(errno));
 			exit(1);
 		}
 
-		respuesta = (char*) malloc ((1024)*sizeof(char));
+		if(!cuerpoCorreo)
+		{
+			respuesta = (char*) malloc ((1024)*sizeof(char));
 
-		if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
-			fprintf(stderr, "Connection aborted on error %s", strerror(errno));
-			exit(1);
+			if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
+				fprintf(stderr, "Connection aborted on error %s", strerror(errno));
+				exit(1);
+			}
+
+			if(reg(contents,regDATA))
+				cuerpoCorreo = 1;
+
+			printf("Respuesta: %s\n", respuesta);
+
+			fputs(respuesta, log);
+			//fseek (log, 0, SEEK_END);
+			free(respuesta);
 		}
-
-		printf("Respuesta: %s", respuesta);
-
-		fputs(respuesta, log);
-		fseek (log, 0, SEEK_END);
-		free(respuesta);
+		
 		free(contents);
 		contents = (char*) malloc ((1024)*sizeof(char));
 	}
+
+	respuesta = (char*) malloc ((1024)*sizeof(char));
+
+	if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
+		fprintf(stderr, "Connection aborted on error %s", strerror(errno));
+		exit(1);
+	}
+
+	fputs(respuesta, log);
+	//fseek (log, 0, SEEK_END);
+	free(respuesta);
 
 	fclose(input_file);
 

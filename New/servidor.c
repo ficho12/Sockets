@@ -429,7 +429,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
 		//aux = (char*) malloc(1024*sizeof(char));
-		printf("Recibido: %s   Nivel: %d", mensaje_r, nivel);
+		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, strlen(mensaje_r), nivel);
 		//Debug printf("%s\n",mensaje_r);
 		
 		//bucle
@@ -474,17 +474,17 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				case4 = 1; //bool case4 = true;
 				break;
 			case 5:		//REGEX .\r\n
-				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 5) ) {
+				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
 					printf("\tLength: %d", strlen(mensaje_r));
 					smtp_number = 500;	
 				}else{
-					smtp_number = 250;		//0
+					smtp_number = 0;		//0
 					nivel++;
 				}
 				break;
 			case 6:		//REGEX .\r\n
-				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 5) ) {
-					printf("\tLength: %d", strlen(mensaje_r));
+				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
+					//printf("\tLength: %d", strlen(mensaje_r));
 					nivel++;
 				}
 				smtp_number = 250;
@@ -510,19 +510,19 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
 			switch(smtp_number){
 				case 221:	//Respuesta a la orden QUIT
-						printf("\tRespuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
+						printf("Respuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
 						snprintf(respuesta,1024*sizeof(char),"%s",resp221);
 					break;
 				case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
-						printf("\tRespuesta: 250 OK\n");	//Cambiar Respuesta
+						printf("Respuesta: 250 OK\n");	//Cambiar Respuesta
 						snprintf(respuesta,1024*sizeof(char),"%s",resp250);
 					break;
 				case 354:	//Respuesta al envío de la orden DATA
-						printf("\tRespuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
+						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
 						snprintf(respuesta,1024*sizeof(char),"%s",resp354);
 					break;
 				case 500:	//Respuesta a errores de sintaxis en cualquier orden
-						printf("\tRespuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
+						printf("Respuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
 						snprintf(respuesta,1024*sizeof(char),"%s",resp500);
 					break;
 			}
@@ -546,8 +546,9 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			fclose(log);
 			sem_post(&sem);
 			free(respuesta);
+
 		}else{
-			printf("0 DATA. No se envía respuesta");		// No se envía respuesta
+			printf("DATA. No se envía respuesta\n");		// No se envía respuesta
 		}
 
 		free(mensaje_r);

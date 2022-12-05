@@ -1,6 +1,6 @@
-Comunicación Realizada. Fecha: Sun Dec  4 17:54:54 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 45004 500 Error de sintaxis
-250 OK
+Comunicación Realizada. Fecha: Mon Dec  5 19:21:14 2022
+ Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 47958 250 OK
+500 Error de sintaxis
 250 OK
 250 OK
 250 OK
@@ -8,6 +8,10 @@ Comunicación Realizada. Fecha: Sun Dec  4 17:54:54 2022
 250 OK
 250 OK
 250 OK
+250 OK
+354 Comenzando con el texto del correo, finalice con .
+250 OK
+250 OK
 221 Cerrando el servicio
-Comunicación Finalizada. Fecha: Sun Dec  4 17:54:54 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 45004 
+Comunicación Finalizada. Fecha: Mon Dec  5 19:21:14 2022
+ Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 47958 
