@@ -86,7 +86,13 @@ char *argv[];
     
     struct sigaction vec;
 
+	//Struct Nuevo socket UDP
+	struct sockaddr_in udpaddr_in;
 
+	memset ((char *)&udpaddr_in, 0, sizeof(struct sockaddr_in));
+	udpaddr_in.sin_family = AF_INET;
+	udpaddr_in.sin_addr.s_addr = INADDR_ANY;
+	udpaddr_in.sin_port = htons(0);		// 0 --> Puerto efímero
 
 	mkdir("/logs", S_IRWXU | S_IRWXG | S_IRWXO);
 
@@ -97,6 +103,7 @@ char *argv[];
 		fprintf(stderr, "%s: unable to create socket TCP\n", argv[0]);
 		exit(1);
 	}
+
 	/* clear out address structures */
 	memset ((char *)&myaddr_in, 0, sizeof(struct sockaddr_in));
    	memset ((char *)&clientaddr_in, 0, sizeof(struct sockaddr_in));
@@ -162,7 +169,6 @@ char *argv[];
 		 * always best for the parent to do the setpgrp.
 		 */
 
-	//TODO: Semaforo para hacer una zona exclusiva para el acceso al archivo de log en los hijos
 	setpgrp();
 
 	switch (fork()) {
@@ -280,7 +286,57 @@ char *argv[];
                     perror(argv[0]);
                     printf("%s: recvfrom error\n", argv[0]);
                     exit (1);
-                    }
+                }
+
+				//Comentar
+				
+					switch (fork()) {
+        			case -1:	// Can't fork, just exit.
+        				exit(1);
+        			case 0:		// Child process comes here.
+						//Cerrar sockets del padre antes de hacer el nuevo socket
+                    	close(ls_TCP); // Close the listen socket inherited from the daemon. 
+						close(s_UDP);
+
+						nuevoSocketUDP = socket (AF_INET, SOCK_DGRAM, 0);
+						if (nuevoSocketUDP == -1) {
+							perror(argv[0]);
+							fprintf(stderr, "%s: unable to create socket UDP\n", argv[0]);
+							exit(1);
+						}
+
+						//La direccion local tiene que ser un puerto efimero --> 0
+
+						
+						//bind
+						if(bind(nuevoSocketUDP,(struct sockaddr *) &updaddr_in, sizeof(struct sockaddr_in)) == -1){
+							perror(argv[0]);
+							printf("%s: unable to bind address UDP\n", argv[0]);
+							exit(1);
+						}
+
+
+						//sendto
+						if(sendto(nuevoSocketUDP,,0, (struct sockaddr *)&clientaddr_in, addrlen)) == -1){
+							perror("serverUDP");
+							printf("%s: sendto error\n", "serverUDP");
+							exit(1);
+						}
+						
+						//Borrar
+						nc = sendto (s, &reqaddr, sizeof(struct in_addr), 0, (struct sockaddr *)&clientaddr_in, addrlen);
+						if ( nc == -1) {
+							perror("serverUDP");
+							printf("%s: sendto error\n", "serverUDP");
+							exit(1);
+						}
+
+        				serverUDP(nuevoSocketUDP, clientaddr_in);
+        				exit(0);
+        			}
+				
+				//Comentar
+
                 /* Make sure the message received is
                 * null terminated.
                 */
@@ -429,7 +485,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
 		//aux = (char*) malloc(1024*sizeof(char));
-		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, strlen(mensaje_r), nivel);
+		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, (int) strlen(mensaje_r), nivel);
 		//Debug printf("%s\n",mensaje_r);
 		
 		//bucle
@@ -475,7 +531,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			case 5:		//REGEX .\r\n
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
-					printf("\tLength: %d", strlen(mensaje_r));
+					//printf("\tLength: %d",(int) strlen(mensaje_r));
 					smtp_number = 500;	
 				}else{
 					smtp_number = 0;		//0
@@ -484,7 +540,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			case 6:		//REGEX .\r\n
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
-					//printf("\tLength: %d", strlen(mensaje_r));
+					//printf("\tLength: %d",(int) strlen(mensaje_r));
 					nivel++;
 				}
 				smtp_number = 250;

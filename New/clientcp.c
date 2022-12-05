@@ -264,7 +264,9 @@ char *argv[];
 		fprintf(stderr, "Connection aborted on error %s", strerror(errno));
 		exit(1);
 	}
-
+	
+	printf("Respuesta: %s\n", respuesta);
+	
 	fputs(respuesta, log);
 	//fseek (log, 0, SEEK_END);
 	free(respuesta);
