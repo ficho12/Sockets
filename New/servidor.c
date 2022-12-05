@@ -322,6 +322,42 @@ char *argv[];
 							printf("%s: sendto error\n", "serverUDP");
 							exit(1);
 						}
+
+						/*
+						struct in_addr reqaddr;	//for requested host's address 
+						struct hostent *hp;		// pointer to host info for requested host
+						int nc, errcode;
+
+						struct addrinfo hints, *res;
+
+						int addrlen;
+						
+						addrlen = sizeof(struct sockaddr_in);
+
+						memset (&hints, 0, sizeof (hints));
+						hints.ai_family = AF_INET;
+							// Treat the message as a string containing a hostname.
+							// Esta funci�n es la recomendada para la compatibilidad con IPv6 gethostbyname queda obsoleta. 
+						errcode = getaddrinfo (buffer, NULL, &hints, &res);
+						if (errcode != 0){
+							// Name was not found.  Return a
+							//special value signifying the error.
+							reqaddr.s_addr = ADDRNOTFOUND;
+						}
+						else {
+							//Copy address of host into the return buffer.
+							reqaddr = ((struct sockaddr_in *) res->ai_addr)->sin_addr;
+						}
+						freeaddrinfo(res);
+
+						nc = sendto (s, &reqaddr, sizeof(struct in_addr),
+								0, (struct sockaddr *)&clientaddr_in, addrlen);
+						if ( nc == -1) {
+							perror("serverUDP");
+							printf("%s: sendto error\n", "serverUDP");
+							return;
+							}
+						*/
 						
 						//Borrar
 						nc = sendto (s, &reqaddr, sizeof(struct in_addr), 0, (struct sockaddr *)&clientaddr_in, addrlen);
@@ -473,7 +509,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 	//Respuesta cuando el cliente realiza la conexión
 	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
-	snprintf(respuesta,1024*sizeof(char),"%s",resp220);		// TODO: sizeof(resp220)
+	snprintf(respuesta,1024*sizeof(char),"%s",resp220);
 
 	if (send(s, respuesta, 1024, 0) < 0) {
 			fprintf(stderr, "%s: Connection aborted on error ",	comando);
