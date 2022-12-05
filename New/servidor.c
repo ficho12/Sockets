@@ -27,6 +27,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <semaphore.h>
 #include "regex.c"
 
 
@@ -60,6 +61,7 @@ void errout(char *);		/* declare error out routine */
 
 int FIN = 0;             /* Para el cierre ordenado */
 void finalizar(){ FIN = 1; }
+sem_t sem;	//Semaforo
 
 int main(argc, argv)
 int argc;
@@ -83,6 +85,8 @@ char *argv[];
     char buffer[BUFFERSIZE];	/* buffer for packets to be read into */
     
     struct sigaction vec;
+
+
 
 	mkdir("/logs", S_IRWXU | S_IRWXG | S_IRWXO);
 
@@ -199,6 +203,9 @@ char *argv[];
             fprintf(stderr,"%s: unable to register the SIGTERM signal\n", argv[0]);
             exit(1);
         }
+
+		//Semaforo
+		sem_init(&sem, 0, 1);
         
 		while (!FIN) {
             /* Meter en el conjunto de sockets los sockets UDP y TCP */
@@ -285,6 +292,7 @@ char *argv[];
         /* Cerramos los sockets UDP y TCP */
         close(ls_TCP);
         close(s_UDP);
+		sem_destroy(&sem);
     
         printf("\nFin de programa servidor!\n");
         
@@ -361,6 +369,8 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 	//Creamos la String para el nombre del archivo de log dinámicamente con el numero de puerto que se recibe
 	snprintf(logFileName, sizeof(logFileName), "logs/peticiones.log");
+	    
+	sem_wait(&sem);
 	//Abrimos el archvio de log, sino existe se crea
 	log = fopen(logFileName, "a");
 	if(log == NULL)
@@ -380,6 +390,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	
 	//Cerramos archivo de log
     fclose(log);
+	sem_post(&sem);
 	//printf("\nLog Cerrado\n");
 	/* The port number must be converted first to host byte
 	* order before printing.  On most hosts, this is not
@@ -494,8 +505,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
 			//Reservamos memoria para los mensajes
 			respuesta = (char*) malloc ((1024)*sizeof(char));
-			//	TODO: Bloquear acceso al fichero para evitar problemas de concurrencia al escribir el log.
-			//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
+ 			//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
 			//	TODO: No hay que usar dos cadenas ya que si que se envia la cadena del mensaje, por lo tante es el mismo mensaje para el log y la cadena a enviar.
 			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
 			switch(smtp_number){
@@ -523,6 +533,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			}
 
 			//Comienzo LOG
+			sem_wait(&sem);
 			log = fopen(logFileName, "a");
 			if(log == NULL)
 			{
@@ -533,6 +544,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 			fputs(respuesta, log);
 			fclose(log);
+			sem_post(&sem);
 			free(respuesta);
 		}else{
 			printf("0 DATA. No se envía respuesta");		// No se envía respuesta
@@ -566,7 +578,8 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		 */
 	printf("Completed %s port %u, %d requests, at %s\n",
 		hostname, ntohs(clientaddr_in.sin_port), reqcnt, (char *) ctime(&timevar));
-
+	
+	sem_wait(&sem);
 	log = fopen(logFileName, "a");	//a --> Append. Se escribe al final del archivo
 	if(log == NULL)
 	{
@@ -582,6 +595,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	
 	//Cerramos archivo de log
     fclose(log);
+	sem_post(&sem);
 	//printf("\nLog Cerrado\n");
 	
 }
