@@ -45,6 +45,11 @@ int main(argc, argv)
 int argc;
 char *argv[];
 {
+	if (argc != 4) {
+		fprintf(stderr, "Usage:  %s <remote host> <mode (TCP or UDP)> <orders.txt>\n", argv[0]);
+		exit(1);
+	}
+
 	const char* filename = argv[3];
 	// TODO: Comprobacion de errores
     int s;				/* connected socket descriptor */
@@ -82,36 +87,11 @@ char *argv[];
 
 	respuesta = (char*) malloc ((1024)*sizeof(char));
 
-	if(strcmp(argv[2],"TCP") == 0){
-
-		//hacer tcp
-
-	}else{
-
-		//hacer udp
-		printf("UDP no implementado");
-		exit(1);
-
-	}
-
-	if (argc != 4) {
-		fprintf(stderr, "Usage:  %s <remote host>\n", argv[0]);
-		exit(1);
-	}
-
-	/* Create the socket. */
-	s = socket (AF_INET, SOCK_STREAM, 0);
-	if (s == -1) {
-		perror(argv[0]);
-		fprintf(stderr, "%s: unable to create socket\n", argv[0]);
-		exit(1);
-	}
-
 	mkdir("logs", S_IRWXU | S_IRWXG | S_IRWXO);
 	
 	/* clear out address structures */
 	memset ((char *)&myaddr_in, 0, sizeof(struct sockaddr_in));
-	memset ((char *)&servaddr_in, 0, sizeof(struct sockaddr_in));
+	memset ((char *)&servaddr_in, 0, sizeof(struct sockaddr_in));	
 
 	/* Set up the peer address to which we will connect. */
 	servaddr_in.sin_family = AF_INET;
@@ -141,11 +121,42 @@ char *argv[];
 		/* Try to connect to the remote server at the address
 		 * which was just built into peeraddr.
 		 */
-	if (connect(s, (const struct sockaddr *)&servaddr_in, sizeof(struct sockaddr_in)) == -1) {
-		perror(argv[0]);
-		fprintf(stderr, "%s: unable to connect to remote\n", argv[0]);
+	
+	if(strcmp(argv[2],"TCP")){
+		s = socket (AF_INET, SOCK_STREAM, 0);
+		if (s == -1) {
+			perror(argv[0]);
+			fprintf(stderr, "%s: unable to create socket TCP\n", argv[0]);
+			exit(1);
+		}
+
+		if (connect(s, (const struct sockaddr *)&servaddr_in, sizeof(struct sockaddr_in)) == -1) {
+			perror(argv[0]);
+			fprintf(stderr, "%s: unable to connect to remote\n", argv[0]);
+			exit(1);
+		}
+
+	}else if(strcmp(argv[2],"UDP")){
+		struct sigaction sig;
+		myaddr_in.sin_port = htons(0);
+
+		s = socket (AF_INET, SOCK_DGRAM, 0);
+		if (s == -1) {
+			perror(argv[0]);
+			fprintf(stderr, "%s: unable to create socket UDP\n", argv[0]);
+			exit(1);
+		}
+
+		if(bind(s, (const struct sockaddr *)&myaddr_in, addrlen) == -1){
+			perror(argv[0]);
+			printf("%s: unable to bind address UDP\n", argv[0]);
+			exit(1);
+		}
+	}else{
+		fprintf(stderr, "Usage:  %s <remote host> <mode (TCP or UDP)> <orders.txt>\n", argv[0]);
 		exit(1);
 	}
+
 		/* Since the connect call assigns a free address
 		 * to the local end of this connection, let's use
 		 * getsockname to see what it assigned.  Note that
