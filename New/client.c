@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <signal.h>
 #include "regex.c"
 
 #define PUERTO 2873
@@ -122,7 +123,7 @@ char *argv[];
 		 * which was just built into peeraddr.
 		 */
 	
-	if(strcmp(argv[2],"TCP")){
+	if(!strcmp(argv[2],"TCP")){
 		s = socket (AF_INET, SOCK_STREAM, 0);
 		if (s == -1) {
 			perror(argv[0]);
@@ -136,7 +137,7 @@ char *argv[];
 			exit(1);
 		}
 
-	}else if(strcmp(argv[2],"UDP")){
+	}else if(!strcmp(argv[2],"UDP")){
 		struct sigaction sig;
 		myaddr_in.sin_port = htons(0);
 

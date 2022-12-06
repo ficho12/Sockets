@@ -1,5 +1,5 @@
-Comunicación Realizada. Fecha: Mon Dec  5 19:48:50 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 42464 250 OK
+Comunicación Realizada. Fecha: Tue Dec  6 21:24:50 2022
+ Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 51522 250 OK
 500 Error de sintaxis
 250 OK
 250 OK
@@ -13,5 +13,5 @@ Comunicación Realizada. Fecha: Mon Dec  5 19:48:50 2022
 250 OK
 250 OK
 221 Cerrando el servicio
-Comunicación Finalizada. Fecha: Mon Dec  5 19:48:50 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 42464 
+Comunicación Finalizada. Fecha: Tue Dec  6 21:24:50 2022
+ Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 51522 
