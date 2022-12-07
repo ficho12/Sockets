@@ -299,7 +299,7 @@ char *argv[];
 		time(&timevar);
 		printf("All done at %s", (char *)ctime(&timevar));
 	}
-	else
+	else	//UDP
 	{
 
 	}

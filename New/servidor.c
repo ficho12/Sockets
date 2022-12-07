@@ -583,6 +583,8 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 					exit(1);
 			}
 
+			escribirRespuestaLog(respuesta, &sem);
+			/*
 			//Comienzo LOG
 			sem_wait(&sem);
 			log = fopen("logs/peticiones.log", "a");
@@ -596,6 +598,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			fclose(log);
 			sem_post(&sem);
 			free(respuesta);
+			*/
 
 		}else{
 			printf("DATA. No se envía respuesta\n");		// No se envía respuesta
@@ -860,7 +863,6 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 				break;
 		}
 
-
 		if (smtp_number != 0)
 		{
 			//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
@@ -893,21 +895,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 					exit(1);
 			}
 
-
-			//Comienzo LOG
-			sem_wait(&sem);
-			log = fopen(logFileName, "a");
-			if(log == NULL)
-			{
-				fprintf(stdout,"Error al abrir el archivo log %s.\n", logFileName);
-				exit(EXIT_FAILURE);
-			}
-			//printf("\nLog abierto\n");
-
-			fputs(respuesta, log);
-			fclose(log);
-			sem_post(&sem);
-			free(respuesta);
+			escribirRespuestaLog(respuesta, &sem);
 
 		}else{
 			printf("DATA. No se envía respuesta\n");		// No se envía respuesta
