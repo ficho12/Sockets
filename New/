@@ -192,3 +192,27 @@
 354 Comenzando con el texto del correo, finalice con .
 250 OK
 221 Cerrando el servicio
+250 OK
+500 Error de sintaxis
+250 OK
+250 OK
+250 OK
+354 Comenzando con el texto del correo, finalice con .
+250 OK
+250 OK
+250 OK
+354 Comenzando con el texto del correo, finalice con .
+250 OK
+221 Cerrando el servicio
+250 OK
+500 Error de sintaxis
+250 OK
+250 OK
+250 OK
+354 Comenzando con el texto del correo, finalice con .
+250 OK
+250 OK
+250 OK
+354 Comenzando con el texto del correo, finalice con .
+250 OK
+221 Cerrando el servicio

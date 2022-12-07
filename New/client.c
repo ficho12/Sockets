@@ -279,19 +279,6 @@ char *argv[];
 			contents = (char*) malloc ((1024)*sizeof(char));
 		}
 
-		respuesta = (char*) malloc ((1024)*sizeof(char));
-
-		if(recv(s, respuesta, 1024*sizeof(char), 0) <= 0){
-			fprintf(stderr, "Connection aborted on error %s", strerror(errno));
-			exit(1);
-		}
-		
-		printf("Respuesta FINAL: %s\n", respuesta);
-		
-		fputs(respuesta, log);
-		//fseek (log, 0, SEEK_END);
-		free(respuesta);
-
 		fclose(input_file);
 
 		/* Now, shutdown the connection for further sends.
