@@ -446,6 +446,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
             	perror(" inet_ntop \n");
              }
 
+	mkdir("logs", S_IRWXU | S_IRWXG | S_IRWXO);
 	//Creamos la String para el nombre del archivo de log dinámicamente con el numero de puerto que se recibe
 	snprintf(logFileName, sizeof(logFileName), "logs/peticiones.log");
 	    
