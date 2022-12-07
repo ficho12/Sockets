@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 #include <semaphore.h>
 #include "regex.c"
+#include "log.h"
 
 
 #define PUERTO 2873
@@ -88,7 +89,7 @@ char *argv[];
     
     struct sigaction vec;
 
-	mkdir("/logs", S_IRWXU | S_IRWXG | S_IRWXO);
+	//mkdir("/logs", S_IRWXU | S_IRWXG | S_IRWXO);
 
 		/* Create the listen socket. */
 	ls_TCP = socket (AF_INET, SOCK_STREAM, 0);
@@ -436,55 +437,22 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
      status = getnameinfo((struct sockaddr *)&clientaddr_in,sizeof(clientaddr_in),
                            hostname,MAXHOST,NULL,0,0);
      if(status){
-           	/* The information is unavailable for the remote
-			 * host.  Just format its internet address to be
-			 * printed out in the logging information.  The
-			 * address will be shown in "internet dot format".
-			 */
-			 /* inet_ntop para interoperatividad con IPv6 */
-            if (inet_ntop(AF_INET, &(clientaddr_in.sin_addr), hostname, MAXHOST) == NULL)
-            	perror(" inet_ntop \n");
-             }
-
-	mkdir("logs", S_IRWXU | S_IRWXG | S_IRWXO);
-	//Creamos la String para el nombre del archivo de log dinámicamente con el numero de puerto que se recibe
-	snprintf(logFileName, sizeof(logFileName), "logs/peticiones.log");
-	    
-	sem_wait(&sem);
-	//Abrimos el archvio de log, sino existe se crea
-	log = fopen(logFileName, "a");
-	if(log == NULL)
-	{
-		fprintf(stdout,"Error al crear archivo log.\n");
-		exit(EXIT_FAILURE);
+		/* The information is unavailable for the remote
+		* host.  Just format its internet address to be
+		* printed out in the logging information.  The
+		* address will be shown in "internet dot format".
+		*/
+		/* inet_ntop para interoperatividad con IPv6 */
+		if (inet_ntop(AF_INET, &(clientaddr_in.sin_addr), hostname, MAXHOST) == NULL)
+			perror(" inet_ntop \n");
 	}
-	//printf("\nLog abierto\n");
 
-    /* Log a startup message. */
-    time (&timevar);
-	//Guardamos la string del primer mensaje de log de Comunicación Realizada
-	snprintf(logString,sizeof(logString), "Comunicación Realizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d ", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
-
-	//Escribimos la String en el archivo de log
-	fputs(logString, log);
+	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), sem_t &sem, "TCP", 0)
 	
-	//Cerramos archivo de log
-    fclose(log);
-	sem_post(&sem);
-	//printf("\nLog Cerrado\n");
-	/* The port number must be converted first to host byte
-	* order before printing.  On most hosts, this is not
-	* necessary, but the ntohs() call is included here so
-	* that this program could easily be ported to a host
-	* that does require it.
+	/* Set the socket for a lingering, graceful close.
+	* This will cause a final close of this socket to wait until all of the
+	* data sent on it has been received by the remote host.
 	*/
-	printf("Startup from %s port %u at %s\n",
-		hostname, ntohs(clientaddr_in.sin_port), (char *) ctime(&timevar));
-	
-		/* Set the socket for a lingering, graceful close.
-		 * This will cause a final close of this socket to wait until all of the
-		 * data sent on it has been received by the remote host.
-		 */
 	linger.l_onoff  =1;
 	linger.l_linger =1;
 	if (setsockopt(s, SOL_SOCKET, SO_LINGER, &linger,
@@ -649,35 +617,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		 */
 	close(s);
 
-		/* Log a finishing message. */
-	time (&timevar);
-		/* The port number must be converted first to host byte
-		 * order before printing.  On most hosts, this is not
-		 * necessary, but the ntohs() call is included here so
-		 * that this program could easily be ported to a host
-		 * that does require it.
-		 */
-	printf("Completed %s port %u, %d requests, at %s\n",
-		hostname, ntohs(clientaddr_in.sin_port), reqcnt, (char *) ctime(&timevar));
-	
-	sem_wait(&sem);
-	log = fopen(logFileName, "a");	//a --> Append. Se escribe al final del archivo
-	if(log == NULL)
-	{
-		fprintf(stdout,"Error al abrir el archivo log %s.\n", logFileName);
-		exit(EXIT_FAILURE);
-	}
-	//printf("\nLog abierto\n");
-
-	snprintf(logString,sizeof(logString), "Comunicación Finalizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: TCP Puerto: %d ", (char *) ctime(&timevar), hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port));
-
-	//Escribimos la String en el archivo de log
-	fputs(logString, log);
-	
-	//Cerramos archivo de log
-    fclose(log);
-	sem_post(&sem);
-	//printf("\nLog Cerrado\n");
+	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), sem_t &sem, "TCP", 1)
 	
 }
 

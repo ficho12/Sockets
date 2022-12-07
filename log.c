@@ -1,6 +1,6 @@
 #include "log.h"
 
-int escribirLogServer(char * mensaje, char * hostname, char * ip, int puerto, sem_t sem, char * protocolo, int formato){
+int escribirLogServer(char * hostname, char * ip, int puerto, sem_t sem, char * protocolo, int formato){
 	
     char logString[512];
 
@@ -25,9 +25,7 @@ int escribirLogServer(char * mensaje, char * hostname, char * ip, int puerto, se
     switch(formato){
         case 0:	snprintf(logString,sizeof(logString), "Comunicación Realizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: %s Puerto: %d ", tiempo, hostname, ip, protocolo, puerto);
             break;
-        case 1:
-            break;
-        case 2:	snprintf(logString,sizeof(logString), "Comunicación Finalizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: %s Puerto: %d ", tiempo, hostname, ip, protocolo, puerto);
+        case 1:	snprintf(logString,sizeof(logString), "Comunicación Finalizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: %s Puerto: %d ", tiempo, hostname, ip, protocolo, puerto);
             break;
     }
 	//Escribimos la String en el archivo de log

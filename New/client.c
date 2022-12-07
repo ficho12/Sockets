@@ -26,6 +26,7 @@
 #include <errno.h>
 #include <signal.h>
 #include "regex.c"
+#include "log.h"
 
 #define PUERTO 2873
 #define TAM_BUFFER 10
