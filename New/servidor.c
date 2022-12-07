@@ -576,7 +576,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 					break;
 			}
 
-			printf("Respuesta FINAL: %s\n", respuesta);
+			//printf("Respuesta FINAL: %s\n", respuesta);
 
 			if (send(s, respuesta, 1024, 0) <= 0) {
 					fprintf(stderr, "%s: Connection aborted on error ",	comando);
@@ -585,14 +585,13 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 			//Comienzo LOG
 			sem_wait(&sem);
-			log = fopen(logFileName, "a");
+			log = fopen("logs/peticiones.log", "a");
 			if(log == NULL)
 			{
 				fprintf(stdout,"Error al abrir el archivo log %s.\n", logFileName);
 				exit(EXIT_FAILURE);
 			}
 			//printf("\nLog abierto\n");
-
 			fputs(respuesta, log);
 			fclose(log);
 			sem_post(&sem);

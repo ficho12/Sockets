@@ -236,6 +236,7 @@ char *argv[];
 		*/
 
 		contents = (char*) malloc ((1024)*sizeof(char));
+		respuesta = (char*) malloc ((1024)*sizeof(char));
 		//printf("Aquí\n");
 
 		while(getline(&contents,&cont_size,input_file) != -1)
@@ -244,7 +245,6 @@ char *argv[];
 			
 			//snprintf(mensaje, 1024,"%s\r\n",contents);
 
-			printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
 
 			//printf("%s",mensaje);
 
@@ -256,16 +256,16 @@ char *argv[];
 				exit(1);
 			}
 
+			printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
+
 			if(!cuerpoCorreo)
 			{
-				respuesta = (char*) malloc ((1024)*sizeof(char));
-
-				if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
+				if(recv(s, respuesta, 1024*sizeof(char), 0) <= 0){
 					fprintf(stderr, "Connection aborted on error %s", strerror(errno));
 					exit(1);
 				}
 
-				if(reg(contents,regDATA))
+				if(reg(contents,regDATA) && reg(respuesta,reg354))
 					cuerpoCorreo = 1;
 
 				printf("Respuesta: %s\n", respuesta);
@@ -273,6 +273,7 @@ char *argv[];
 				fputs(respuesta, log);
 				//fseek (log, 0, SEEK_END);
 				free(respuesta);
+				respuesta = (char*) malloc ((1024)*sizeof(char));
 			}
 			
 			free(contents);
@@ -280,7 +281,8 @@ char *argv[];
 		}
 
 		fclose(input_file);
-
+		free(contents);
+		free(respuesta);
 		/* Now, shutdown the connection for further sends.
 		* This will cause the server to receive an end-of-file
 		* condition after it has received all the requests that

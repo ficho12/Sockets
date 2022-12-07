@@ -10,6 +10,7 @@
 #define regDATA "DATA"
 #define regPUNTO "^\\."
 #define regQUIT "QUIT"
+#define reg354 "354 Comenzando con el texto del correo, finalice con \\."
 
 //Devuelve 1 si el REGEX es correcto y 0 si es falso y -2 o -3 si da error de REGEX
 int reg(char* textToCheck, char* regExp)
