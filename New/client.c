@@ -42,6 +42,9 @@
  *	The name of the system to which the requests will be sent is given
  *	as a parameter to the command.
  */
+
+void manejadora(){}
+
 int main(argc, argv)
 int argc;
 char *argv[];
@@ -93,6 +96,8 @@ char *argv[];
 	/* clear out address structures */
 	memset ((char *)&myaddr_in, 0, sizeof(struct sockaddr_in));
 	memset ((char *)&servaddr_in, 0, sizeof(struct sockaddr_in));	
+	
+	addrlen = sizeof(struct sockaddr_in);
 
 	/* Set up the peer address to which we will connect. */
 	servaddr_in.sin_family = AF_INET;
@@ -138,8 +143,9 @@ char *argv[];
 		}
 
 	}else if(!strcmp(argv[2],"UDP")){
-		struct sigaction sig;
 		myaddr_in.sin_port = htons(0);
+
+		signal(SIGALRM, manejadora);
 
 		s = socket (AF_INET, SOCK_DGRAM, 0);
 		if (s == -1) {
@@ -165,12 +171,17 @@ char *argv[];
 		 * because getsockname returns the actual length
 		 * of the address.
 		 */
-	addrlen = sizeof(struct sockaddr_in);
 	if (getsockname(s, (struct sockaddr *)&myaddr_in, &addrlen) == -1) {
 		perror(argv[0]);
 		fprintf(stderr, "%s: unable to read socket address\n", argv[0]);
 		exit(1);
-	 }
+	}
+
+	if(!strcmp(argv[2],"TCP")
+		clienteTCP();
+	else
+		clienteUDP();
+	
 
 	if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
 		fprintf(stderr, "Connection aborted on error %s", strerror(errno));
@@ -208,6 +219,8 @@ char *argv[];
 		fprintf(stdout,"Error al leer el archivo de ordenes.\n");
 		exit(EXIT_FAILURE);
 	}
+
+	
 
 	fputs(respuesta, log);
 	//fseek (log, 0, SEEK_END);
