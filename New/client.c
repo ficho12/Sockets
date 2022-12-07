@@ -206,7 +206,6 @@ char *argv[];
 			fprintf(stdout,"Error al crear archivo log.\n");
 			exit(EXIT_FAILURE);
 		}
-		//printf("\nLog abierto\n");
 
 		FILE* input_file = fopen(filename, "r");
 
@@ -222,32 +221,11 @@ char *argv[];
 		//fseek (log, 0, SEEK_END);
 		free(respuesta);
 
-		//TODO: Leer archivo de ordenes y enviar mensajes \r\l
-
-		/*
-			FILE * fp;
-			fp = fopen(argv[3], "z");
-			fscanf(fp, "", cad);
-			while(!feof(fp)){
-				send()
-				fscanf(fp,...)
-			}
-			fclose(fp);
-		*/
-
 		contents = (char*) malloc ((1024)*sizeof(char));
 		respuesta = (char*) malloc ((1024)*sizeof(char));
-		//printf("Aquí\n");
 
 		while(getline(&contents,&cont_size,input_file) != -1)
 		{
-			//mensaje = (char*) malloc ((1024)*sizeof(char));
-			
-			//snprintf(mensaje, 1024,"%s\r\n",contents);
-
-
-			//printf("%s",mensaje);
-
 			if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
 				cuerpoCorreo = 0;
 

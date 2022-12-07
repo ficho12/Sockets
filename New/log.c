@@ -59,3 +59,20 @@ int escribirRespuestaLog (char * mensaje, sem_t *sem)
     free(mensaje);
     return 0;
 }
+
+int escribirRespuestaLogCliente (char * mensaje, char * logName)
+{
+    FILE * log;
+    //Abrimos el archvio de log, sino existe se crea
+    log = fopen(logName, "a");
+    if(log == NULL)
+    {
+        fprintf(stdout,"Error al crear archivo log.\n");
+        return(-1);
+    }
+
+    fputs(mensaje, log);
+    fclose(log);
+	free(mensaje);
+    return 0;
+}
