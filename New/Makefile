@@ -9,11 +9,14 @@ PROGS = servidor client
 
 all: ${PROGS}
 
-servidor: servidor.o
-	${CC} ${CFLAGS} -o $@ servidor.o ${LIBS}
+servidor: servidor.o log.o
+	${CC} ${CFLAGS} -o $@ servidor.o log.o ${LIBS}
 	
-clientcp: client.o
-	${CC} ${CFLAGS} -o $@ client.o ${LIBS}
+client: client.o log.o
+	${CC} ${CFLAGS} -o $@ client.o log.o ${LIBS}
+
+log.o: log.c log.h
+	$(CC) -c log.c
 
 clean:
 	rm *.o ${PROGS}

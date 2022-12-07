@@ -1,6 +1,6 @@
 #include "log.h"
 
-int escribirLogServer(char * hostname, char * ip, int puerto, sem_t sem, char * protocolo, int formato){
+int escribirLogServer(char * hostname, int ip, int puerto, sem_t sem, char * protocolo, int formato){
 	
     char logString[512];
 

@@ -178,140 +178,142 @@ char *argv[];
 		exit(1);
 	}
 
-	if(!strcmp(argv[2],"TCP")
-		clienteTCP();
-	else
-		clienteUDP();
-	
-
-	if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
-		fprintf(stderr, "Connection aborted on error %s", strerror(errno));
-		exit(1);
-	}
-
-	printf("Respuesta: %s\n", respuesta);
-
-	 /* Print out a startup message for the user. */
-	time(&timevar);
-	/* The port number must be converted first to host byte
-	 * order before printing.  On most hosts, this is not
-	 * necessary, but the ntohs() call is included here so
-	 * that this program could easily be ported to a host
-	 * that does require it.
-	 */
-	printf("Connected to %s on port %u at %s",
-			argv[1], ntohs(myaddr_in.sin_port), (char *) ctime(&timevar));
-
-	snprintf(logFileName, sizeof(logFileName), "logs/%d.txt", ntohs(myaddr_in.sin_port));
-
-	//Abrimos el archvio de log, sino existe se crea
-	log = fopen(logFileName, "a");
-	if(log == NULL)
-	{
-		fprintf(stdout,"Error al crear archivo log.\n");
-		exit(EXIT_FAILURE);
-	}
-	//printf("\nLog abierto\n");
-
-	FILE* input_file = fopen(filename, "r");
-
-	if (!input_file)
-    {
-		fprintf(stdout,"Error al leer el archivo de ordenes.\n");
-		exit(EXIT_FAILURE);
-	}
-
-	
-
-	fputs(respuesta, log);
-	//fseek (log, 0, SEEK_END);
-	free(respuesta);
-
-	//TODO: Leer archivo de ordenes y enviar mensajes \r\l
-
-	/*
-		FILE * fp;
-		fp = fopen(argv[3], "z");
-		fscanf(fp, "", cad);
-		while(!feof(fp)){
-			send()
-			fscanf(fp,...)
-		}
-		fclose(fp);
-	*/
-
-	contents = (char*) malloc ((1024)*sizeof(char));
-	//printf("Aquí\n");
-
-	while(getline(&contents,&cont_size,input_file) != -1)
-	{
-		//mensaje = (char*) malloc ((1024)*sizeof(char));
-		
-		//snprintf(mensaje, 1024,"%s\r\n",contents);
-
-		printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
-
-		//printf("%s",mensaje);
-
-		if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
-			cuerpoCorreo = 0;
-
-		if (send(s, contents, 1024, 0) == -1) {
-			fprintf(stderr, "%s: Connection aborted on error %s",get_s,strerror(errno));
+	if(!strcmp(argv[2],"TCP")){
+		if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
+			fprintf(stderr, "Connection aborted on error %s", strerror(errno));
 			exit(1);
 		}
 
-		if(!cuerpoCorreo)
-		{
-			respuesta = (char*) malloc ((1024)*sizeof(char));
+		printf("Respuesta: %s\n", respuesta);
 
-			if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
-				fprintf(stderr, "Connection aborted on error %s", strerror(errno));
+		/* Print out a startup message for the user. */
+		time(&timevar);
+		/* The port number must be converted first to host byte
+		* order before printing.  On most hosts, this is not
+		* necessary, but the ntohs() call is included here so
+		* that this program could easily be ported to a host
+		* that does require it.
+		*/
+		printf("Connected to %s on port %u at %s",
+				argv[1], ntohs(myaddr_in.sin_port), (char *) ctime(&timevar));
+
+		snprintf(logFileName, sizeof(logFileName), "logs/%d.txt", ntohs(myaddr_in.sin_port));
+
+		//Abrimos el archvio de log, sino existe se crea
+		log = fopen(logFileName, "a");
+		if(log == NULL)
+		{
+			fprintf(stdout,"Error al crear archivo log.\n");
+			exit(EXIT_FAILURE);
+		}
+		//printf("\nLog abierto\n");
+
+		FILE* input_file = fopen(filename, "r");
+
+		if (!input_file)
+		{
+			fprintf(stdout,"Error al leer el archivo de ordenes.\n");
+			exit(EXIT_FAILURE);
+		}
+
+		
+
+		fputs(respuesta, log);
+		//fseek (log, 0, SEEK_END);
+		free(respuesta);
+
+		//TODO: Leer archivo de ordenes y enviar mensajes \r\l
+
+		/*
+			FILE * fp;
+			fp = fopen(argv[3], "z");
+			fscanf(fp, "", cad);
+			while(!feof(fp)){
+				send()
+				fscanf(fp,...)
+			}
+			fclose(fp);
+		*/
+
+		contents = (char*) malloc ((1024)*sizeof(char));
+		//printf("Aquí\n");
+
+		while(getline(&contents,&cont_size,input_file) != -1)
+		{
+			//mensaje = (char*) malloc ((1024)*sizeof(char));
+			
+			//snprintf(mensaje, 1024,"%s\r\n",contents);
+
+			printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
+
+			//printf("%s",mensaje);
+
+			if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
+				cuerpoCorreo = 0;
+
+			if (send(s, contents, 1024, 0) == -1) {
+				fprintf(stderr, "%s: Connection aborted on error %s",get_s,strerror(errno));
 				exit(1);
 			}
 
-			if(reg(contents,regDATA))
-				cuerpoCorreo = 1;
+			if(!cuerpoCorreo)
+			{
+				respuesta = (char*) malloc ((1024)*sizeof(char));
 
-			printf("Respuesta: %s\n", respuesta);
+				if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
+					fprintf(stderr, "Connection aborted on error %s", strerror(errno));
+					exit(1);
+				}
 
-			fputs(respuesta, log);
-			//fseek (log, 0, SEEK_END);
-			free(respuesta);
+				if(reg(contents,regDATA))
+					cuerpoCorreo = 1;
+
+				printf("Respuesta: %s\n", respuesta);
+
+				fputs(respuesta, log);
+				//fseek (log, 0, SEEK_END);
+				free(respuesta);
+			}
+			
+			free(contents);
+			contents = (char*) malloc ((1024)*sizeof(char));
+		}
+
+		respuesta = (char*) malloc ((1024)*sizeof(char));
+
+		if(recv(s, respuesta, 1024*sizeof(char), 0) <= 0){
+			fprintf(stderr, "Connection aborted on error %s", strerror(errno));
+			exit(1);
 		}
 		
-		free(contents);
-		contents = (char*) malloc ((1024)*sizeof(char));
+		printf("Respuesta FINAL: %s\n", respuesta);
+		
+		fputs(respuesta, log);
+		//fseek (log, 0, SEEK_END);
+		free(respuesta);
+
+		fclose(input_file);
+
+		/* Now, shutdown the connection for further sends.
+		* This will cause the server to receive an end-of-file
+		* condition after it has received all the requests that
+		* have just been sent, indicating that we will not be
+		* sending any further requests.
+		*/
+		if (shutdown(s, 1) == -1) {
+			perror(argv[0]);
+			fprintf(stderr, "%s: unable to shutdown socket\n", argv[0]);
+			exit(1);
+		}
+
+		/* Print message indicating completion of task. */
+		time(&timevar);
+		printf("All done at %s", (char *)ctime(&timevar));
+	}
+	else
+	{
+
 	}
 
-	respuesta = (char*) malloc ((1024)*sizeof(char));
-
-	if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
-		fprintf(stderr, "Connection aborted on error %s", strerror(errno));
-		exit(1);
-	}
-	
-	printf("Respuesta: %s\n", respuesta);
-	
-	fputs(respuesta, log);
-	//fseek (log, 0, SEEK_END);
-	free(respuesta);
-
-	fclose(input_file);
-
-	/* Now, shutdown the connection for further sends.
-	* This will cause the server to receive an end-of-file
-	* condition after it has received all the requests that
-	* have just been sent, indicating that we will not be
-	* sending any further requests.
-	*/
-	if (shutdown(s, 1) == -1) {
-		perror(argv[0]);
-		fprintf(stderr, "%s: unable to shutdown socket\n", argv[0]);
-		exit(1);
-	}
-
-    /* Print message indicating completion of task. */
-	time(&timevar);
-	printf("All done at %s", (char *)ctime(&timevar));
+	exit (0);
 }

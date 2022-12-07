@@ -447,7 +447,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			perror(" inet_ntop \n");
 	}
 
-	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), sem_t &sem, "TCP", 0)
+	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 0);
 	
 	/* Set the socket for a lingering, graceful close.
 	* This will cause a final close of this socket to wait until all of the
@@ -534,8 +534,9 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
 					//printf("\tLength: %d",(int) strlen(mensaje_r));
 					nivel++;
-				}
-				smtp_number = 250;
+					smtp_number = 250;
+				}else
+					smtp_number = 0;		//0
 				break;
 			case 7:		//REGEX QUIT
 				if(reg(mensaje_r,regQUIT))
@@ -575,7 +576,9 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 					break;
 			}
 
-			if (send(s, respuesta, 1024, 0) < 0) {
+			printf("Respuesta FINAL: %s\n", respuesta);
+
+			if (send(s, respuesta, 1024, 0) <= 0) {
 					fprintf(stderr, "%s: Connection aborted on error ",	comando);
 					exit(1);
 			}
@@ -617,7 +620,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		 */
 	close(s);
 
-	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), sem_t &sem, "TCP", 1)
+	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 1);
 	
 }
 
@@ -787,7 +790,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 			}
 		}
 		//aux = (char*) malloc(1024*sizeof(char));
-		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, (int) strlen(mensaje_r), nivel);
+		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\tSMTP_NUM%d\n", mensaje_r, (int) strlen(mensaje_r), nivel,smtp_number);
 		//Debug printf("%s\n",mensaje_r);
 		
 		//bucle
@@ -858,6 +861,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 				break;
 		}
 
+
 		if (smtp_number != 0)
 		{
 			//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
@@ -885,10 +889,11 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 					break;
 			}
 
-			if (send(s, respuesta, 1024, 0) < 0) {
+			if (send(s, respuesta, 1024, 0) <= 0) {
 					fprintf(stderr, "%s: Connection aborted on error ",	comando);
 					exit(1);
 			}
+
 
 			//Comienzo LOG
 			sem_wait(&sem);
