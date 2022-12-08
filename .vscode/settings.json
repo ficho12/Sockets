@@ -2,6 +2,10 @@
     "files.associations": {
         "*.pl": "prolog",
         "*.pro": "prolog",
-        "regex.h": "c"
+        "regex.h": "c",
+        "stat.h": "c",
+        "socket.h": "c",
+        "semaphore.h": "c",
+        "signal.h": "c"
     }
 }

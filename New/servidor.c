@@ -711,9 +711,17 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
 	snprintf(respuesta,1024*sizeof(char),"%s",resp220);
 
+	/*
 	if (send(s, respuesta, 1024, 0) < 0) {
 			fprintf(stderr, "%s: Connection aborted on error ",	comando);
 			exit(1);
+	}
+	*/
+
+	if(sendto(s,respuesta,1024, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
+		perror("serverUDP");
+		printf("%s: sendto error\n", "serverUDP");
+		exit(1);
 	}
 
 	/*
@@ -844,9 +852,17 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 					break;
 			}
 
+			/*
 			if (send(s, respuesta, 1024, 0) <= 0) {
 					fprintf(stderr, "%s: Connection aborted on error ",	comando);
 					exit(1);
+			}
+			*/
+
+			if(sendto(s,respuesta,1024, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
+				perror("serverUDP");
+				printf("%s: sendto error\n", "serverUDP");
+				exit(1);
 			}
 
 			escribirRespuestaLog(respuesta, &sem);
