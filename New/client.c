@@ -75,7 +75,7 @@ char *argv[];
 
 	//Nuevas variables
 	char *contents;
-	size_t cont_size = 512*sizeof(char);
+	size_t cont_size = 516;
 	char delim[] = " ";
 	char tipo[2];
 	char *pagina;
@@ -94,7 +94,7 @@ char *argv[];
 	char fichero[256];
 	int cuerpoCorreo = 0;
 
-	respuesta = (char*) malloc ((1024)*sizeof(char));
+	respuesta = (char*) malloc (516);
 
 	mkdir("logs", S_IRWXU | S_IRWXG | S_IRWXO);
 	
@@ -186,7 +186,7 @@ char *argv[];
 	}
 
 	if(!strcmp(argv[2],"TCP")){
-		if(recv(s, respuesta, 1024*sizeof(char), 0) < 0){
+		if(recv(s, respuesta, 516, 0) < 0){
 			fprintf(stderr, "Connection aborted on error %s", strerror(errno));
 			exit(1);
 		}
@@ -225,15 +225,15 @@ char *argv[];
 		fputs(respuesta, log);
 		free(respuesta);
 
-		contents = (char*) malloc ((1024)*sizeof(char));
-		respuesta = (char*) malloc ((1024)*sizeof(char));
+		contents = (char*) malloc (516);
+		respuesta = (char*) malloc (516);
 
 		while(getline(&contents,&cont_size,input_file) != -1)
 		{
 			if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
 				cuerpoCorreo = 0;
 
-			if (send(s, contents, 1024, 0) == -1) {
+			if (send(s, contents, 516, 0) == -1) {
 				fprintf(stderr, "%s: Connection aborted on error %s",get_s,strerror(errno));
 				exit(1);
 			}
@@ -242,7 +242,7 @@ char *argv[];
 
 			if(!cuerpoCorreo)
 			{
-				if(recv(s, respuesta, 1024*sizeof(char), 0) <= 0){
+				if(recv(s, respuesta, 516, 0) <= 0){
 					fprintf(stderr, "Connection aborted on error %s", strerror(errno));
 					exit(1);
 				}
@@ -255,11 +255,11 @@ char *argv[];
 				fputs(respuesta, log);
 				//fseek (log, 0, SEEK_END);
 				free(respuesta);
-				respuesta = (char*) malloc ((1024)*sizeof(char));
+				respuesta = (char*) malloc (516);
 			}
 			
 			free(contents);
-			contents = (char*) malloc ((1024)*sizeof(char));
+			contents = (char*) malloc (516);
 		}
 
 		fclose(input_file);
@@ -289,11 +289,11 @@ char *argv[];
 			exit(1);
 		}
 
-		recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&servaddr_in, &addrlen); //Recibe " " para actualizar los datos del socket nuevo para este cliente
+		recvfrom(s,respuesta, 516, 0,(struct sockaddr *)&servaddr_in, &addrlen); //Recibe " " para actualizar los datos del socket nuevo para este cliente
 
 		printf("Respuesta: %s\n", respuesta);
 
-		recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&servaddr_in, &addrlen); //Recibe 220, primer mensaje real.
+		recvfrom(s,respuesta, 516, 0,(struct sockaddr *)&servaddr_in, &addrlen); //Recibe 220, primer mensaje real.
 
 		printf("Respuesta: %s\n", respuesta);
 
@@ -329,8 +329,8 @@ char *argv[];
 		fputs(respuesta, log);
 		free(respuesta);
 
-		contents = (char*) malloc ((1024)*sizeof(char));
-		respuesta = (char*) malloc ((1024)*sizeof(char));
+		contents = (char*) malloc (516);
+		respuesta = (char*) malloc (516);
 		int n_intentos;
 		while(getline(&contents,&cont_size,input_file) != -1)
 		{
@@ -350,7 +350,7 @@ char *argv[];
 				if(!cuerpoCorreo)
 				{
 					alarm(TIMEOUT);
-					if(recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&servaddr_in, &addrlen) == -1){
+					if(recvfrom(s,respuesta, 516, 0,(struct sockaddr *)&servaddr_in, &addrlen) == -1){
 						if (errno == EINTR){
 							n_intentos++;
 							fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", n_intentos);
@@ -373,7 +373,7 @@ char *argv[];
 
 						fputs(respuesta, log);
 						free(respuesta);
-						respuesta = (char*) malloc ((1024)*sizeof(char));
+						respuesta = (char*) malloc (516);
 						break;
 					}
 				}else{
@@ -381,7 +381,7 @@ char *argv[];
 				}
 			}
 			free(contents);
-			contents = (char*) malloc ((1024)*sizeof(char));
+			contents = (char*) malloc (516);
 		}
 
 		fclose(input_file);

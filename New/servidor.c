@@ -465,12 +465,12 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 		errout(hostname);
 	}
 
- 	mensaje_r = (char *) malloc(1024);
-	respuesta = (char*) malloc ((1024)*sizeof(char));
+ 	mensaje_r = (char *) malloc(516);
+	respuesta = (char*) malloc (516);
 
 	//Respuesta cuando el cliente realiza la conexión
 	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
-	snprintf(respuesta,1024*sizeof(char),"%s",resp220);
+	snprintf(respuesta,516,"%s",resp220);
 
 	/*
 	if (send(s, respuesta, 1024, 0) < 0) {
@@ -479,7 +479,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 	}
 	*/
 
-	if(sendto(s,respuesta,1024, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
+	if(sendto(s,respuesta,516, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
 		perror("serverUDP");
 		printf("%s: sendto error\n", "serverUDP");
 		exit(1);
@@ -496,7 +496,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 		n_intentos = 0;
 		while(n_intentos < MAX_INTENTOS){
 			alarm(TIMEOUT);
-			if(recvfrom(s,mensaje_r, 1024, 0,(struct sockaddr *)&clientaddr_in, &addrlen) == -1){
+			if(recvfrom(s,mensaje_r, 516, 0,(struct sockaddr *)&clientaddr_in, &addrlen) == -1){
 				if (errno == EINTR){
 					fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", ++n_intentos);
 					if(n_intentos == 5)
@@ -591,26 +591,26 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 		{
 			//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
 			//Reservamos memoria para los mensajes
-			respuesta = (char*) malloc ((1024)*sizeof(char));
+			respuesta = (char*) malloc (516);
  			//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
 			//	TODO: No hay que usar dos cadenas ya que si que se envia la cadena del mensaje, por lo tante es el mismo mensaje para el log y la cadena a enviar.
 			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
 			switch(smtp_number){
 				case 221:	//Respuesta a la orden QUIT
 						printf("Respuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp221);
+						snprintf(respuesta,516,"%s",resp221);
 					break;
 				case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
 						printf("Respuesta: 250 OK\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp250);
+						snprintf(respuesta,516,"%s",resp250);
 					break;
 				case 354:	//Respuesta al envío de la orden DATA
 						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp354);
+						snprintf(respuesta,516,"%s",resp354);
 					break;
 				case 500:	//Respuesta a errores de sintaxis en cualquier orden
 						printf("Respuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp500);
+						snprintf(respuesta,516,"%s",resp500);
 					break;
 			}
 
@@ -621,7 +621,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 			}
 			*/
 
-			if(sendto(s,respuesta,1024, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
+			if(sendto(s,respuesta,516, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
 				perror("serverUDP");
 				printf("%s: sendto error\n", "serverUDP");
 				exit(1);
@@ -733,21 +733,21 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		errout(hostname);
 	}
 
- 	mensaje_r = (char *) malloc(1024);
-	respuesta = (char*) malloc ((1024)*sizeof(char));
+ 	mensaje_r = (char *) malloc(516);
+	respuesta = (char*) malloc (516);
 
 	//Respuesta cuando el cliente realiza la conexión
 	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
-	snprintf(respuesta,1024*sizeof(char),"%s",resp220);
+	snprintf(respuesta,516,"%s",resp220);
 
-	if (send(s, respuesta, 1024, 0) < 0) {
+	if (send(s, respuesta, 516, 0) < 0) {
 			fprintf(stderr, "%s: Connection aborted on error ",	comando);
 			exit(1);
 	}
 
 	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada. 
 	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
-	while (recv(s, mensaje_r, 1024, 0) == 1024) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
+	while (recv(s, mensaje_r, 516, 0) == 516) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
 
 		//aux = (char*) malloc(1024*sizeof(char));
 		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, (int) strlen(mensaje_r), nivel);
@@ -826,32 +826,32 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		{
 			//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
 			//Reservamos memoria para los mensajes
-			respuesta = (char*) malloc ((1024)*sizeof(char));
+			respuesta = (char*) malloc (516);
  			//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
 			//	TODO: No hay que usar dos cadenas ya que si que se envia la cadena del mensaje, por lo tante es el mismo mensaje para el log y la cadena a enviar.
 			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
 			switch(smtp_number){
 				case 221:	//Respuesta a la orden QUIT
 						printf("Respuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp221);
+						snprintf(respuesta,516,"%s",resp221);
 					break;
 				case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
 						printf("Respuesta: 250 OK\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp250);
+						snprintf(respuesta,516,"%s",resp250);
 					break;
 				case 354:	//Respuesta al envío de la orden DATA
 						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp354);
+						snprintf(respuesta,516,"%s",resp354);
 					break;
 				case 500:	//Respuesta a errores de sintaxis en cualquier orden
 						printf("Respuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp500);
+						snprintf(respuesta,516,"%s",resp500);
 					break;
 			}
 
 			//printf("Respuesta FINAL: %s\n", respuesta);
 
-			if (send(s, respuesta, 1024, 0) <= 0) {
+			if (send(s, respuesta, 516, 0) <= 0) {
 					fprintf(stderr, "%s: Connection aborted on error ",	comando);
 					exit(1);
 			}
@@ -863,7 +863,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		}
 
 		free(mensaje_r);
-		mensaje_r = (char *) malloc(1024*sizeof(char));
+		mensaje_r = (char *) malloc(516);
 
 	}
 
