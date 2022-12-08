@@ -30,6 +30,9 @@
 
 #define PUERTO 2873
 #define TAM_BUFFER 10
+#define MAX_INTENTOS 5
+#define TIMEOUT 5
+
 
 /*
  *			M A I N
@@ -62,6 +65,7 @@ char *argv[];
     long timevar;			/* contains time returned by time() */
     struct sockaddr_in myaddr_in;	/* for local socket address */
     struct sockaddr_in servaddr_in;	/* for server socket address */
+	struct sockaddr_in udpaddr_in; //para el nuevo socket de UDP con puerto efímero y único para esta conexión
 	int addrlen, i, j, errcode;
     /* This example uses TAM_BUFFER byte messages. */
 	char buf[TAM_BUFFER];
@@ -96,7 +100,8 @@ char *argv[];
 	
 	/* clear out address structures */
 	memset ((char *)&myaddr_in, 0, sizeof(struct sockaddr_in));
-	memset ((char *)&servaddr_in, 0, sizeof(struct sockaddr_in));	
+	memset ((char *)&servaddr_in, 0, sizeof(struct sockaddr_in));
+	memset ((char *)&udpaddr_in, 0, sizeof(struct sockaddr_in));		
 	
 	addrlen = sizeof(struct sockaddr_in);
 
@@ -145,6 +150,8 @@ char *argv[];
 
 	}else if(!strcmp(argv[2],"UDP")){
 		myaddr_in.sin_port = htons(0);
+		myaddr_in.sin_family = AF_INET;
+		myaddr_in.sin_addr.s_addr = INADDR_ANY;
 
 		signal(SIGALRM, manejadora);
 
@@ -213,12 +220,9 @@ char *argv[];
 		{
 			fprintf(stdout,"Error al leer el archivo de ordenes.\n");
 			exit(EXIT_FAILURE);
-		}
-
-		
+		}		
 
 		fputs(respuesta, log);
-		//fseek (log, 0, SEEK_END);
 		free(respuesta);
 
 		contents = (char*) malloc ((1024)*sizeof(char));
@@ -279,6 +283,136 @@ char *argv[];
 	}
 	else	//UDP
 	{
+		int n_intentos;
+
+		if(sendto(s," ",1,0, (struct sockaddr *)&servaddr_in, addrlen)== -1) {
+			perror("clientUDP");
+			printf("%s: sendto error\n", "clientUDP");
+			exit(1);
+		}
+
+		n_intentos = 0;
+		while(n_intentos < MAX_INTENTOS){
+			alarm(TIMEOUT);
+			if(recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&udpaddr_in, &addrlen) == -1){
+				if (errno == EINTR){
+					fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", ++n_intentos);
+					if(n_intentos == MAX_INTENTOS)
+					{
+						fprintf(stderr, "Número máximo de intentos de recepción de mensaje en el cliente UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(myaddr_in.sin_port));
+						exit(1);		// TODO: Hacer cierre ordenado
+					}
+				}
+				else{
+					fprintf(stderr, "No se ha podido recibir una respuesta en el servidor UDP\n");
+					exit(1);
+				}
+			}else{
+				alarm(0);
+				break;
+			}
+		}
+
+		printf("Respuesta: %s\n", respuesta);
+
+		/* Print out a startup message for the user. */
+		time(&timevar);
+		/* The port number must be converted first to host byte
+		* order before printing.  On most hosts, this is not
+		* necessary, but the ntohs() call is included here so
+		* that this program could easily be ported to a host
+		* that does require it.
+		*/
+		printf("Connected to %s on port %u at %s",
+				argv[1], ntohs(myaddr_in.sin_port), (char *) ctime(&timevar));
+
+		snprintf(logFileName, sizeof(logFileName), "logs/%d.txt", ntohs(myaddr_in.sin_port));
+
+		//Abrimos el archvio de log, sino existe se crea
+		log = fopen(logFileName, "a");
+		if(log == NULL)
+		{
+			fprintf(stdout,"Error al crear archivo log.\n");
+			exit(EXIT_FAILURE);
+		}
+
+		FILE* input_file = fopen(filename, "r");
+
+		if (!input_file)
+		{
+			fprintf(stdout,"Error al leer el archivo de ordenes.\n");
+			exit(EXIT_FAILURE);
+		}		
+
+		fputs(respuesta, log);
+		free(respuesta);
+
+		contents = (char*) malloc ((1024)*sizeof(char));
+		respuesta = (char*) malloc ((1024)*sizeof(char));
+
+		while(getline(&contents,&cont_size,input_file) != -1)
+		{
+			if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
+				cuerpoCorreo = 0;
+
+			n_intentos = 0;
+			while(n_intentos < MAX_INTENTOS){
+				if(sendto(s,contents,cont_size,0, (struct sockaddr *)&udpaddr_in, addrlen)== -1) {
+					perror("serverUDP");
+					printf("%s: sendto error\n", "serverUDP");
+					exit(1);
+				}
+				sleep(1);
+				n_intentos++;
+				if(n_intentos == MAX_INTENTOS)
+				{
+					fprintf(stderr, "Número máximo de intentos de envío de mensaje en el cliente UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(myaddr_in.sin_port));
+					exit(1);		// TODO: Hacer cierre ordenado
+				}
+			}
+
+			printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
+
+			if(!cuerpoCorreo)
+			{
+				if(recv(s, respuesta, 1024*sizeof(char), 0) <= 0){
+					fprintf(stderr, "Connection aborted on error %s", strerror(errno));
+					exit(1);
+				}
+
+				if(reg(contents,regDATA) && reg(respuesta,reg354))
+					cuerpoCorreo = 1;
+
+				printf("Respuesta: %s\n", respuesta);
+
+				fputs(respuesta, log);
+				//fseek (log, 0, SEEK_END);
+				free(respuesta);
+				respuesta = (char*) malloc ((1024)*sizeof(char));
+			}
+			
+			free(contents);
+			contents = (char*) malloc ((1024)*sizeof(char));
+		}
+
+		fclose(input_file);
+		free(contents);
+		free(respuesta);
+		/* Now, shutdown the connection for further sends.
+		* This will cause the server to receive an end-of-file
+		* condition after it has received all the requests that
+		* have just been sent, indicating that we will not be
+		* sending any further requests.
+		*/
+		if (shutdown(s, 1) == -1) {
+			perror(argv[0]);
+			fprintf(stderr, "%s: unable to shutdown socket\n", argv[0]);
+			exit(1);
+		}
+
+		/* Print message indicating completion of task. */
+		time(&timevar);
+		printf("All done at %s", (char *)ctime(&timevar));
 
 	}
 
