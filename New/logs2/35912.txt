@@ -1,5 +1,5 @@
-Comunicación Realizada. Fecha: Thu Dec  8 18:15:57 2022
- Ejecutable: clientcp Nombre del host:localhost IP: 16777343 Protocolo: TCP Puerto: 35912 250 OK
+220 Servicio de transferencia simple de correo preparado
+250 OK
 500 Error de sintaxis
 250 OK
 250 OK

@@ -283,35 +283,17 @@ char *argv[];
 	}
 	else	//UDP
 	{
-		int n_intentos;
-
 		if(sendto(s," ",1,0, (struct sockaddr *)&servaddr_in, addrlen)== -1) {
 			perror("clientUDP");
-			printf("%s: sendto error\n", "clientUDP");
+			printf("%s: sendto error 1\n", "clientUDP");
 			exit(1);
 		}
 
-		n_intentos = 0;
-		while(n_intentos < MAX_INTENTOS){
-			alarm(TIMEOUT);
-			if(recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&udpaddr_in, &addrlen) == -1){
-				if (errno == EINTR){
-					fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", ++n_intentos);
-					if(n_intentos == MAX_INTENTOS)
-					{
-						fprintf(stderr, "Número máximo de intentos de recepción de mensaje en el cliente UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(myaddr_in.sin_port));
-						exit(1);		// TODO: Hacer cierre ordenado
-					}
-				}
-				else{
-					fprintf(stderr, "No se ha podido recibir una respuesta en el servidor UDP\n");
-					exit(1);
-				}
-			}else{
-				alarm(0);
-				break;
-			}
-		}
+		recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&servaddr_in, &addrlen); //Recibe " " para actualizar los datos del socket nuevo para este cliente
+
+		printf("Respuesta: %s\n", respuesta);
+
+		recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&servaddr_in, &addrlen); //Recibe 220, primer mensaje real.
 
 		printf("Respuesta: %s\n", respuesta);
 
@@ -355,30 +337,17 @@ char *argv[];
 			if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
 				cuerpoCorreo = 0;
 
-			n_intentos = 0;
-			while(n_intentos < MAX_INTENTOS){
-				if(sendto(s,contents,cont_size,0, (struct sockaddr *)&udpaddr_in, addrlen)== -1) {
-					perror("serverUDP");
-					printf("%s: sendto error\n", "serverUDP");
-					exit(1);
-				}
-				sleep(1);
-				n_intentos++;
-				if(n_intentos == MAX_INTENTOS)
-				{
-					fprintf(stderr, "Número máximo de intentos de envío de mensaje en el cliente UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(myaddr_in.sin_port));
-					exit(1);		// TODO: Hacer cierre ordenado
-				}
+			if(sendto(s,contents,cont_size,0, (struct sockaddr *)&servaddr_in, addrlen)== -1) {
+				perror("serverUDP");
+				printf("%s: sendto error 2\n", "serverUDP");
+				exit(1);
 			}
 
 			printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
 
 			if(!cuerpoCorreo)
 			{
-				if(recv(s, respuesta, 1024*sizeof(char), 0) <= 0){
-					fprintf(stderr, "Connection aborted on error %s", strerror(errno));
-					exit(1);
-				}
+				recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&servaddr_in, &addrlen);
 
 				if(reg(contents,regDATA) && reg(respuesta,reg354))
 					cuerpoCorreo = 1;
@@ -398,17 +367,6 @@ char *argv[];
 		fclose(input_file);
 		free(contents);
 		free(respuesta);
-		/* Now, shutdown the connection for further sends.
-		* This will cause the server to receive an end-of-file
-		* condition after it has received all the requests that
-		* have just been sent, indicating that we will not be
-		* sending any further requests.
-		*/
-		if (shutdown(s, 1) == -1) {
-			perror(argv[0]);
-			fprintf(stderr, "%s: unable to shutdown socket\n", argv[0]);
-			exit(1);
-		}
 
 		/* Print message indicating completion of task. */
 		time(&timevar);

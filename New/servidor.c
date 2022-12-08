@@ -383,6 +383,279 @@ char *argv[];
 }
 
 /*
+ *				S E R V E R U D P
+ *
+ *	This is the actual server routine that the daemon forks to
+ *	handle each individual connection.  Its purpose is to receive
+ *	the request packets from the remote client, process them,
+ *	and return the results to the client.  It will also write some
+ *	logging information to stdout.
+ *
+ */
+void serverUDP(int s, struct sockaddr_in clientaddr_in)
+{
+    int reqcnt = 0;		/* keeps count of number of requests */
+	char buf[TAM_BUFFER];		/* This example uses TAM_BUFFER byte messages. */
+	char hostname[MAXHOST];		/* remote host's name string */
+
+	int len, len1, status;
+    struct hostent *hp;		/* pointer to host info for remote host */
+    long timevar;			/* contains time returned by time() */
+    
+    struct linger linger;		/* allow a lingering, graceful close; */
+    				            /* used when setting SO_LINGER */
+
+	//Variables
+	char *mensaje_r;
+	char *html;
+	char *comando;
+	int comando_b = 0;
+	char *tipo,*tipo_aux;
+	char *aux;
+	FILE * log;
+	long long final_log;
+	char logString[1024];
+	char logFileName[99];
+	int contador = 0;
+	int nivel = 1;
+	int case4 = 0;
+	int addrlen;
+	
+	int smtp_number = 500;
+	char * buffer = 0;
+	long long length = 0,length2 = 0;
+	FILE * f;
+	char *respuesta = 0,*cabecera = 0,*paquete = 0;
+
+	char longitud[256];
+
+	int n_intentos = 0;
+
+	/* Look up the host information for the remote host
+	 * that we have connected with.  Its internet address
+	 * was returned by the accept call, in the main
+	 * daemon loop above.
+	 */
+	 
+     status = getnameinfo((struct sockaddr *)&clientaddr_in,sizeof(clientaddr_in),
+                           hostname,MAXHOST,NULL,0,0);
+     if(status){
+           	/* The information is unavailable for the remote
+			 * host.  Just format its internet address to be
+			 * printed out in the logging information.  The
+			 * address will be shown in "internet dot format".
+			 */
+			 /* inet_ntop para interoperatividad con IPv6 */
+            if (inet_ntop(AF_INET, &(clientaddr_in.sin_addr), hostname, MAXHOST) == NULL)
+            	perror(" inet_ntop \n");
+             }
+
+	addrlen = sizeof(struct sockaddr_in);
+	
+	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 0);
+
+		/* Set the socket for a lingering, graceful close.
+		 * This will cause a final close of this socket to wait until all of the
+		 * data sent on it has been received by the remote host.
+		 */
+	linger.l_onoff  =1;
+	linger.l_linger =1;
+	if (setsockopt(s, SOL_SOCKET, SO_LINGER, &linger,
+					sizeof(linger)) == -1) {
+		errout(hostname);
+	}
+
+ 	mensaje_r = (char *) malloc(1024);
+	respuesta = (char*) malloc ((1024)*sizeof(char));
+
+	//Respuesta cuando el cliente realiza la conexión
+	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
+	snprintf(respuesta,1024*sizeof(char),"%s",resp220);
+
+	/*
+	if (send(s, respuesta, 1024, 0) < 0) {
+			fprintf(stderr, "%s: Connection aborted on error ",	comando);
+			exit(1);
+	}
+	*/
+
+	if(sendto(s,respuesta,1024, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
+		perror("serverUDP");
+		printf("%s: sendto error\n", "serverUDP");
+		exit(1);
+	}
+
+	/*
+	cc = recvfrom(s_UDP, buffer, BUFFERSIZE - 1, 0,
+                   (struct sockaddr *)&clientaddr_in, &addrlen);
+	*/
+
+	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada. 
+	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
+	for(;;){
+		n_intentos = 0;
+		while(n_intentos < MAX_INTENTOS){
+			alarm(TIMEOUT);
+			if(recvfrom(s,mensaje_r, 1024, 0,(struct sockaddr *)&clientaddr_in, &addrlen) == -1){
+				if (errno == EINTR){
+					fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", ++n_intentos);
+					if(n_intentos == 5)
+					{
+						fprintf(stderr, "Número máximo de intentos de recepción de mensaje en el servidor UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(clientaddr_in.sin_port));
+						exit(1);		// TODO: Hacer cierre ordenado
+					}
+				}
+				else{
+					fprintf(stderr, "No se ha podido recibir una respuesta en el servidor UDP\n");
+					exit(1);
+				}
+			}else{
+				alarm(0);
+				break;
+			}
+		}
+		//aux = (char*) malloc(1024*sizeof(char));
+		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\tSMTP_NUM%d\n", mensaje_r, (int) strlen(mensaje_r), nivel,smtp_number);
+		//Debug printf("%s\n",mensaje_r);
+		
+		//bucle
+		/*	Refenciando el diagrama de las diapositivas
+			Nivel	Client												Server
+			0		Conexion											send(220)
+			1		HELO												send(250)	
+			2		MAIL FROM											send(250)
+			3		RCPT TO:	De 3 puede pasar a 3 otra vez o a 4		send(250)
+			4		DATA												send(354)
+			5		leer datos hasta punto								no enviar nada
+			6 		.\r\n		De 6 puede volver a 2					send(250)
+			7		QUIT												send(221)
+		*/
+		switch(nivel){
+			case 1:		//REGEX HELO <dominio-emisor>
+				if(reg(mensaje_r,regHELO)){
+					smtp_number = 250;
+					nivel++;
+				}else
+					smtp_number = 500;
+				break;
+			case 2:		//REGEX MAIL FROM <reverse-path>
+				if(reg(mensaje_r,regMAIL)){
+					smtp_number = 250;
+					nivel++;
+				}else
+					smtp_number = 500;
+				break;
+			case 3:		//REGEX RCPT <fordward-path>
+				if(reg(mensaje_r,regRCPT))
+					smtp_number = 250;
+				else if(case4){
+					//REGEX DATA
+					if(reg(mensaje_r,regDATA)){
+						smtp_number = 354;
+						nivel+=2;
+					}else
+						smtp_number = 500;
+				}else
+					smtp_number = 500;
+				case4 = 1; //bool case4 = true;
+				break;
+			case 5:		//REGEX .\r\n
+				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
+					//printf("\tLength: %d",(int) strlen(mensaje_r));
+					smtp_number = 500;	
+				}else{
+					smtp_number = 0;		//0
+					nivel++;
+				}
+				break;
+			case 6:		//REGEX .\r\n
+				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
+					//printf("\tLength: %d",(int) strlen(mensaje_r));
+					nivel++;
+					smtp_number = 250;
+				}else
+					smtp_number = 0;		//0
+				break;
+			case 7:		//REGEX QUIT
+				if(reg(mensaje_r,regQUIT))
+					smtp_number = 221;
+				else if(reg(mensaje_r,regMAIL)){
+						smtp_number = 250;
+						nivel = 3;
+					}else
+						smtp_number = 500;
+				break;
+		}
+
+		if (smtp_number != 0)
+		{
+			//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
+			//Reservamos memoria para los mensajes
+			respuesta = (char*) malloc ((1024)*sizeof(char));
+ 			//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
+			//	TODO: No hay que usar dos cadenas ya que si que se envia la cadena del mensaje, por lo tante es el mismo mensaje para el log y la cadena a enviar.
+			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
+			switch(smtp_number){
+				case 221:	//Respuesta a la orden QUIT
+						printf("Respuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
+						snprintf(respuesta,1024*sizeof(char),"%s",resp221);
+					break;
+				case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
+						printf("Respuesta: 250 OK\n");	//Cambiar Respuesta
+						snprintf(respuesta,1024*sizeof(char),"%s",resp250);
+					break;
+				case 354:	//Respuesta al envío de la orden DATA
+						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
+						snprintf(respuesta,1024*sizeof(char),"%s",resp354);
+					break;
+				case 500:	//Respuesta a errores de sintaxis en cualquier orden
+						printf("Respuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
+						snprintf(respuesta,1024*sizeof(char),"%s",resp500);
+					break;
+			}
+
+			/*
+			if (send(s, respuesta, 1024, 0) <= 0) {
+					fprintf(stderr, "%s: Connection aborted on error ",	comando);
+					exit(1);
+			}
+			*/
+
+			if(sendto(s,respuesta,1024, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
+				perror("serverUDP");
+				printf("%s: sendto error\n", "serverUDP");
+				exit(1);
+			}
+
+			escribirRespuestaLog(respuesta, &sem);
+
+		}else{
+			printf("DATA. No se envía respuesta\n");		// No se envía respuesta
+		}
+
+		free(mensaje_r);
+		mensaje_r = (char *) malloc(1024*sizeof(char));
+
+	}
+
+	/*--------------------------------------------------------------------------------*/
+		/* The loop has terminated, because there are no
+		 * more requests to be serviced.  As mentioned above,
+		 * this close will block until all of the sent replies
+		 * have been received by the remote host.  The reason
+		 * for lingering on the close is so that the server will
+		 * have a better idea of when the remote has picked up
+		 * all of the data.  This will allow the start and finish
+		 * times printed in the log file to reflect more accurately
+		 * the length of time this connection was used.
+		 */
+	close(s);
+
+	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 1);
+ }
+
+ 
+/*
  *				S E R V E R T C P
  *
  *	This is the actual server routine that the daemon forks to
@@ -619,276 +892,4 @@ void errout(char *hostname)
 	printf("Connection with %s aborted on error\n", hostname);
 	exit(1);     
 }
-
-
-/*
- *				S E R V E R U D P
- *
- *	This is the actual server routine that the daemon forks to
- *	handle each individual connection.  Its purpose is to receive
- *	the request packets from the remote client, process them,
- *	and return the results to the client.  It will also write some
- *	logging information to stdout.
- *
- */
-void serverUDP(int s, struct sockaddr_in clientaddr_in)
-{
-    int reqcnt = 0;		/* keeps count of number of requests */
-	char buf[TAM_BUFFER];		/* This example uses TAM_BUFFER byte messages. */
-	char hostname[MAXHOST];		/* remote host's name string */
-
-	int len, len1, status;
-    struct hostent *hp;		/* pointer to host info for remote host */
-    long timevar;			/* contains time returned by time() */
-    
-    struct linger linger;		/* allow a lingering, graceful close; */
-    				            /* used when setting SO_LINGER */
-
-	//Variables
-	char *mensaje_r;
-	char *html;
-	char *comando;
-	int comando_b = 0;
-	char *tipo,*tipo_aux;
-	char *aux;
-	FILE * log;
-	long long final_log;
-	char logString[1024];
-	char logFileName[99];
-	int contador = 0;
-	int nivel = 1;
-	int case4 = 0;
-	int addrlen;
-	
-	int smtp_number = 500;
-	char * buffer = 0;
-	long long length = 0,length2 = 0;
-	FILE * f;
-	char *respuesta = 0,*cabecera = 0,*paquete = 0;
-
-	char longitud[256];
-
-	int n_intentos = 0;
-
-	/* Look up the host information for the remote host
-	 * that we have connected with.  Its internet address
-	 * was returned by the accept call, in the main
-	 * daemon loop above.
-	 */
-	 
-     status = getnameinfo((struct sockaddr *)&clientaddr_in,sizeof(clientaddr_in),
-                           hostname,MAXHOST,NULL,0,0);
-     if(status){
-           	/* The information is unavailable for the remote
-			 * host.  Just format its internet address to be
-			 * printed out in the logging information.  The
-			 * address will be shown in "internet dot format".
-			 */
-			 /* inet_ntop para interoperatividad con IPv6 */
-            if (inet_ntop(AF_INET, &(clientaddr_in.sin_addr), hostname, MAXHOST) == NULL)
-            	perror(" inet_ntop \n");
-             }
-
-	addrlen = sizeof(struct sockaddr_in);
-	
-	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 0);
-
-		/* Set the socket for a lingering, graceful close.
-		 * This will cause a final close of this socket to wait until all of the
-		 * data sent on it has been received by the remote host.
-		 */
-	linger.l_onoff  =1;
-	linger.l_linger =1;
-	if (setsockopt(s, SOL_SOCKET, SO_LINGER, &linger,
-					sizeof(linger)) == -1) {
-		errout(hostname);
-	}
-
- 	mensaje_r = (char *) malloc(1024);
-	respuesta = (char*) malloc ((1024)*sizeof(char));
-
-	//Respuesta cuando el cliente realiza la conexión
-	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
-	snprintf(respuesta,1024*sizeof(char),"%s",resp220);
-
-	/*
-	if (send(s, respuesta, 1024, 0) < 0) {
-			fprintf(stderr, "%s: Connection aborted on error ",	comando);
-			exit(1);
-	}
-	*/
-
-	if(sendto(s,respuesta,1024, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
-		perror("serverUDP");
-		printf("%s: sendto error\n", "serverUDP");
-		exit(1);
-	}
-
-	/*
-	cc = recvfrom(s_UDP, buffer, BUFFERSIZE - 1, 0,
-                   (struct sockaddr *)&clientaddr_in, &addrlen);
-	*/
-
-	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada. 
-	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
-	for(;;){
-		n_intentos = 0;
-		while(n_intentos < MAX_INTENTOS){
-			alarm(TIMEOUT);
-			if(recvfrom(s,mensaje_r, 1024, 0,(struct sockaddr *)&clientaddr_in, &addrlen) == -1){
-				if (errno == EINTR){
-					fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", ++n_intentos);
-					if(n_intentos == 5)
-					{
-						fprintf(stderr, "Número máximo de intentos de recepción de mensaje en el servidor UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(clientaddr_in.sin_port));
-						exit(1);		// TODO: Hacer cierre ordenado
-					}
-				}
-				else{
-					fprintf(stderr, "No se ha podido recibir una respuesta en el servidor UDP\n");
-					exit(1);
-				}
-			}else{
-				alarm(0);
-				break;
-			}
-		}
-		//aux = (char*) malloc(1024*sizeof(char));
-		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\tSMTP_NUM%d\n", mensaje_r, (int) strlen(mensaje_r), nivel,smtp_number);
-		//Debug printf("%s\n",mensaje_r);
-		
-		//bucle
-		/*	Refenciando el diagrama de las diapositivas
-			Nivel	Client												Server
-			0		Conexion											send(220)
-			1		HELO												send(250)	
-			2		MAIL FROM											send(250)
-			3		RCPT TO:	De 3 puede pasar a 3 otra vez o a 4		send(250)
-			4		DATA												send(354)
-			5		leer datos hasta punto								no enviar nada
-			6 		.\r\n		De 6 puede volver a 2					send(250)
-			7		QUIT												send(221)
-		*/
-		switch(nivel){
-			case 1:		//REGEX HELO <dominio-emisor>
-				if(reg(mensaje_r,regHELO)){
-					smtp_number = 250;
-					nivel++;
-				}else
-					smtp_number = 500;
-				break;
-			case 2:		//REGEX MAIL FROM <reverse-path>
-				if(reg(mensaje_r,regMAIL)){
-					smtp_number = 250;
-					nivel++;
-				}else
-					smtp_number = 500;
-				break;
-			case 3:		//REGEX RCPT <fordward-path>
-				if(reg(mensaje_r,regRCPT))
-					smtp_number = 250;
-				else if(case4){
-					//REGEX DATA
-					if(reg(mensaje_r,regDATA)){
-						smtp_number = 354;
-						nivel+=2;
-					}else
-						smtp_number = 500;
-				}else
-					smtp_number = 500;
-				case4 = 1; //bool case4 = true;
-				break;
-			case 5:		//REGEX .\r\n
-				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
-					//printf("\tLength: %d",(int) strlen(mensaje_r));
-					smtp_number = 500;	
-				}else{
-					smtp_number = 0;		//0
-					nivel++;
-				}
-				break;
-			case 6:		//REGEX .\r\n
-				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
-					//printf("\tLength: %d",(int) strlen(mensaje_r));
-					nivel++;
-				}
-				smtp_number = 250;
-				break;
-			case 7:		//REGEX QUIT
-				if(reg(mensaje_r,regQUIT))
-					smtp_number = 221;
-				else if(reg(mensaje_r,regMAIL)){
-						smtp_number = 250;
-						nivel = 3;
-					}else
-						smtp_number = 500;
-				break;
-		}
-
-		if (smtp_number != 0)
-		{
-			//Aquí ya se debe tener la respuesta que queremos enviar al cliente en smtp_number
-			//Reservamos memoria para los mensajes
-			respuesta = (char*) malloc ((1024)*sizeof(char));
- 			//	TODO: Tenemos la ip del cliente en accept para TCP y en recvfrom para UDP, el nombre se obtiene con una llamada a addrinfo (?) 
-			//	TODO: No hay que usar dos cadenas ya que si que se envia la cadena del mensaje, por lo tante es el mismo mensaje para el log y la cadena a enviar.
-			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
-			switch(smtp_number){
-				case 221:	//Respuesta a la orden QUIT
-						printf("Respuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp221);
-					break;
-				case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
-						printf("Respuesta: 250 OK\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp250);
-					break;
-				case 354:	//Respuesta al envío de la orden DATA
-						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp354);
-					break;
-				case 500:	//Respuesta a errores de sintaxis en cualquier orden
-						printf("Respuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
-						snprintf(respuesta,1024*sizeof(char),"%s",resp500);
-					break;
-			}
-
-			/*
-			if (send(s, respuesta, 1024, 0) <= 0) {
-					fprintf(stderr, "%s: Connection aborted on error ",	comando);
-					exit(1);
-			}
-			*/
-
-			if(sendto(s,respuesta,1024, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
-				perror("serverUDP");
-				printf("%s: sendto error\n", "serverUDP");
-				exit(1);
-			}
-
-			escribirRespuestaLog(respuesta, &sem);
-
-		}else{
-			printf("DATA. No se envía respuesta\n");		// No se envía respuesta
-		}
-
-		free(mensaje_r);
-		mensaje_r = (char *) malloc(1024*sizeof(char));
-
-	}
-
-	/*--------------------------------------------------------------------------------*/
-		/* The loop has terminated, because there are no
-		 * more requests to be serviced.  As mentioned above,
-		 * this close will block until all of the sent replies
-		 * have been received by the remote host.  The reason
-		 * for lingering on the close is so that the server will
-		 * have a better idea of when the remote has picked up
-		 * all of the data.  This will allow the start and finish
-		 * times printed in the log file to reflect more accurately
-		 * the length of time this connection was used.
-		 */
-	close(s);
-
-	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 1);
- }
 
