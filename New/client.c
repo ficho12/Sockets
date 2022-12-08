@@ -331,35 +331,55 @@ char *argv[];
 
 		contents = (char*) malloc ((1024)*sizeof(char));
 		respuesta = (char*) malloc ((1024)*sizeof(char));
-
+		int n_intentos;
 		while(getline(&contents,&cont_size,input_file) != -1)
 		{
-			if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
-				cuerpoCorreo = 0;
+			n_intentos = 0;
+			while(n_intentos < MAX_INTENTOS){					
+				if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
+					cuerpoCorreo = 0;
 
-			if(sendto(s,contents,cont_size,0, (struct sockaddr *)&servaddr_in, addrlen)== -1) {
-				perror("serverUDP");
-				printf("%s: sendto error 2\n", "serverUDP");
-				exit(1);
+				if(sendto(s,contents,cont_size,0, (struct sockaddr *)&servaddr_in, addrlen)== -1) {
+					perror("serverUDP");
+					printf("%s: sendto error 2\n", "serverUDP");
+					exit(1);
+				}
+
+				printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
+
+				if(!cuerpoCorreo)
+				{
+					alarm(TIMEOUT);
+					if(recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&servaddr_in, &addrlen) == -1){
+						if (errno == EINTR){
+							n_intentos++;
+							fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", n_intentos);
+							if(n_intentos == 5)
+							{
+								fprintf(stderr, "Número máximo de intentos de recepción de mensaje en el servidor UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(servaddr_in.sin_port));
+								exit(1);		// TODO: Hacer cierre ordenado
+							}
+						}
+						else{
+							fprintf(stderr, "No se ha podido recibir una respuesta en el servidor UDP\n");
+							exit(1);
+						}
+					}else{
+						alarm(0);
+						if(reg(contents,regDATA) && reg(respuesta,reg354))
+							cuerpoCorreo = 1;
+
+						printf("Respuesta: %s\n", respuesta);
+
+						fputs(respuesta, log);
+						free(respuesta);
+						respuesta = (char*) malloc ((1024)*sizeof(char));
+						break;
+					}
+				}else{
+					break;
+				}
 			}
-
-			printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
-
-			if(!cuerpoCorreo)
-			{
-				recvfrom(s,respuesta, 1024, 0,(struct sockaddr *)&servaddr_in, &addrlen);
-
-				if(reg(contents,regDATA) && reg(respuesta,reg354))
-					cuerpoCorreo = 1;
-
-				printf("Respuesta: %s\n", respuesta);
-
-				fputs(respuesta, log);
-				//fseek (log, 0, SEEK_END);
-				free(respuesta);
-				respuesta = (char*) malloc ((1024)*sizeof(char));
-			}
-			
 			free(contents);
 			contents = (char*) malloc ((1024)*sizeof(char));
 		}
