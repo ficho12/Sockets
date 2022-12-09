@@ -313,7 +313,6 @@ char *argv[];
 							exit(1);
 						}
 
-
 						//sendto
 						if(sendto(nuevoSocketUDP," ",1,0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
 							perror("serverUDP");
@@ -393,7 +392,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 
 	addrlen = sizeof(struct sockaddr_in);
 	
-	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 0);
+	escribirLogServer("",hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "UDP", 0);
 
 		/* Set the socket for a lingering, graceful close.
 		 * This will cause a final close of this socket to wait until all of the
@@ -419,6 +418,8 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 		exit(1);
 	}
 
+	escribirLogServer(respuesta,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "UDP", 2);
+
 	for(;;){
 		n_intentos = 0;
 		while(n_intentos < MAX_INTENTOS){
@@ -441,6 +442,8 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			}
 		}
+
+		escribirLogServer(mensaje_r,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "UDP", 1);
 
 		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\tSMTP_NUM%d\n", mensaje_r, (int) strlen(mensaje_r), nivel,smtp_number);
 		
@@ -544,7 +547,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 				exit(1);
 			}
 
-			escribirRespuestaLog(respuesta, &sem);
+		escribirLogServer(respuesta,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "UDP", 2);
 
 		}else{
 			printf("DATA. No se envía respuesta\n");		// No se envía respuesta
@@ -568,7 +571,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 		 */
 	close(s);
 
-	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 1);
+	escribirLogServer("",hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "UDP", 3);
  }
 
  
@@ -621,7 +624,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			perror(" inet_ntop \n");
 	}
 
-	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 0);
+	escribirLogServer("",hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 0);
 	
 	/* Set the socket for a lingering, graceful close.
 	* This will cause a final close of this socket to wait until all of the
@@ -645,11 +648,16 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		fprintf(stderr, "Connection aborted on error.");
 		exit(1);
 	}
+	
+	escribirLogServer(respuesta,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 2);
 
 	while (recv(s, mensaje_r, 516, 0) == 516) {	
+		
+		escribirLogServer(mensaje_r,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 1);
 
 		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, (int) strlen(mensaje_r), nivel);
-		
+			
+
 		//bucle
 		/*	Refenciando el diagrama de las diapositivas
 			Nivel	Client												Server
@@ -749,7 +757,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				exit(1);
 			}
 
-			escribirRespuestaLog(respuesta, &sem);
+			escribirLogServer(respuesta,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 2);
 
 		}else{
 			printf("DATA. No se envía respuesta\n");		// No se envía respuesta
@@ -772,7 +780,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		 * the length of time this connection was used.
 		 */
 
-	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 1);
+	escribirLogServer("",hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 3);
 	
 	close(s);
 }
