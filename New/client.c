@@ -49,6 +49,16 @@
 
 void manejadora(){}
 
+// Devuelve 1 si el mensaje ya tiene CRLF, 0 si no lo tiene y lo añade
+int comprobarCRLF(char * mensaje){
+	if (strstr(mensaje, "\r\n"))
+		return 1;
+	else{
+		strcat(mensaje, "\r\n");
+		return 0;
+	}
+}
+
 int main(argc, argv)
 int argc;
 char *argv[];
@@ -214,6 +224,8 @@ char *argv[];
 			if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
 				cuerpoCorreo = 0;
 
+			comprobarCRLF(contents);
+
 			if (send(s, contents, 516, 0) == -1) {
 				fprintf(stderr, "Connection aborted on error %s.",strerror(errno));
 				exit(1);
@@ -319,6 +331,8 @@ char *argv[];
 			while(n_intentos < MAX_INTENTOS){					
 				if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
 					cuerpoCorreo = 0;
+
+				comprobarCRLF(contents);
 
 				if(sendto(s,contents,cont_size,0, (struct sockaddr *)&servaddr_in, addrlen)== -1) {
 					perror("serverUDP");

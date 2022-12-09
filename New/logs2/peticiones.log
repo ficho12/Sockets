@@ -1,171 +1,177 @@
-Comunicación Realizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428
-Comunicación Realizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444
-Comunicación Realizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 220 Servicio de transferencia simple de correo preparado
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 220 Servicio de transferencia simple de correo preparado
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 220 Servicio de transferencia simple de correo preparado
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: HOLA usal.es
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 500 Error de sintaxis
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: HELO usal.es
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: HELO usal.es
-Comunicación Realizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742
-Comunicación Realizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 220 Servicio de transferencia simple de correo preparado
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 220 Servicio de transferencia simple de correo preparado
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: MAIL FROM <pepe>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 500 Error de sintaxis
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: HOLA usal.es
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: HELO usal.es
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: DATA
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 500 Error de sintaxis
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 500 Error de sintaxis
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: HELO usal.es
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: MAIL FROM <pepe>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: RCPT TO: <Jones@Beta.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: RCPT TO: <Jones@Beta.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 500 Error de sintaxis
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: RCPT TO: <Brown@Beta.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: DATA
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: HELO usal.es
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: RCPT TO: <Jones@Beta.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: DATOS
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 500 Error de sintaxis
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: RCPT TO: <Brown@Beta.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: Texto de mi correo en ordenes1.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: DATA
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: DATA
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: RCPT TO: <Jones@Beta.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 500 Error de sintaxis
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 500 Error de sintaxis
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: DATOS
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 500 Error de sintaxis
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: Texto de mi correo 2.
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: DATA
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: RCPT TO: <Jones@Beta.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: RCPT TO: <Jones@Beta.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: RCPT TO: <Brown@Beta.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: DATA
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: Texto de mi correo 2.
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: Linea 2 de mi correo en ordenes2.txt
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: MAIL FROM: <manolo.usal.es>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: DATA
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: Texto de mi correo en ordenes1.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: Linea 2 de mi correo en ordenes1.txt
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 500 Error de sintaxis
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: MAIL FROM: <manolo@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 250 OK
-Comunicación Realizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: QUITMensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 220 Servicio de transferencia simple de correo preparado
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 56146 Mensaje: 221 Cerrando el servicio
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: Texto de mi primer correo.
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: RCPT TO <cristina@usal.es>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: HELO usal.es
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 500 Error de sintaxis
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: RCPT TO: <cristina@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: DATA
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: RCPT TO: <Jones@Beta.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 500 Error de sintaxis
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: Texto de mi correo 22.
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: DATA
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: Linea 2 de mi correo en ordenes2.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: QUITMensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: RCPT TO: <Jones@Beta.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 50742 Mensaje: 221 Cerrando el servicio
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: RCPT TO: <Brown@Beta.ARPA>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: DATA
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: Texto de mi primer correo.
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: Linea 2 de mi correo en ordenes.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: MAIL FROM: <pp@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: RCPT TO: <juan@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: DATA
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: Texto de mi segundo correo.
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: Linea 2 de mi segundo correo en ordenes.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: QUITMensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43935 Mensaje: 221 Cerrando el servicio
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: Linea 2 de mi correo en ordenes1.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: Linea 2 de mi correo en ordenes2.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 250 OK
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: MAIL FROM: <manolo.usal.es>
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: QUITMensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444 Mensaje: 221 Cerrando el servicio
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 500 Error de sintaxis
-Comunicación Finalizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51444
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: MAIL FROM: <manolo@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: RCPT TO <cristina@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 500 Error de sintaxis
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: RCPT TO: <cristina@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: DATA
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: Texto de mi correo 22.
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: Linea 2 de mi correo en ordenes.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: MAIL FROM: <pp@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: RCPT TO: <juan@usal.es>
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: DATA
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 354 Comenzando con el texto del correo, finalice con .
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: Texto de mi segundo correo.
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: DATA
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: Linea 2 de mi correo en ordenes2.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: QUITMensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450 Mensaje: 221 Cerrando el servicio
-Comunicación Finalizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51450
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: Linea 2 de mi segundo correo en ordenes.txt
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: .
-Mensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 250 OK
-Mensaje Recibido		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: QUITMensaje Enviado		 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428 Mensaje: 221 Cerrando el servicio
-Comunicación Finalizada	 Fecha: Fri Dec  9 01:59:49 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 51428
+Comunicación Realizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846
+Comunicación Realizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 220 Servicio de transferencia simple de correo preparado
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 220 Servicio de transferencia simple de correo preparado
+Comunicación Realizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 220 Servicio de transferencia simple de correo preparado
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: HELO usal.es
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: HOLA usal.es
+Comunicación Realizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 220 Servicio de transferencia simple de correo preparado
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: RCPT TO: <Jones@Beta.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: HELO usal.es
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: HELO usal.es
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: HELO usal.es
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 250 OK
+Comunicación Realizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 220 Servicio de transferencia simple de correo preparado
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: RCPT TO: <Jones@Beta.ARPA>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: RCPT TO: <Jones@Beta.ARPA>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: DATA
+Comunicación Realizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: MAIL FROM <pepe>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: HOLA usal.es
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 220 Servicio de transferencia simple de correo preparado
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 500 Error de sintaxis
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: RCPT TO: <Jones@Beta.ARPA>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: HELO usal.es
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: HELO usal.es
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: RCPT TO: <Brown@Beta.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: MAIL FROM <pepe>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: RCPT TO: <Jones@Beta.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: RCPT TO: <Jones@Beta.ARPA>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: DATA
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: DATA
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: RCPT TO: <Brown@Beta.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: RCPT TO: <Brown@Beta.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: DATOS
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: DATA
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: Texto de mi primer correo.
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: DATA
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: RCPT TO: <Jones@Beta.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: Texto de mi correo en ordenes1.txt
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: RCPT TO: <Brown@Beta.ARPA>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: Texto de mi primer correo.
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: DATOS
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: Linea 2 de mi correo en ordenes.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 500 Error de sintaxis
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: DATA
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: MAIL FROM: <pp@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: MAIL FROM: <Smith@Alpha.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: DATA
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: RCPT TO: <Jones@Beta.ARPA>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: DATA
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: RCPT TO: <juan@usal.es>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: Texto de mi correo 2.
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: Texto de mi correo 2.
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: Texto de mi correo en ordenes1.txt
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: DATA
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: Linea 2 de mi correo en ordenes2.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: Linea 2 de mi correo en ordenes1.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: QUIT
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 43223 Mensaje: 221 Cerrando el servicio
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: Texto de mi segundo correo.
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: MAIL FROM: <manolo.usal.es>
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: Linea 2 de mi segundo correo en ordenes.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 500 Error de sintaxis
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: QUIT
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: MAIL FROM: <manolo@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 55684 Mensaje: 221 Cerrando el servicio
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: RCPT TO <cristina@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: RCPT TO: <cristina@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: DATA
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: Texto de mi correo 22.
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: DATA
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: Linea 2 de mi correo en ordenes2.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: QUIT
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: UDP Puerto: 53097 Mensaje: 221 Cerrando el servicio
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: Linea 2 de mi correo en ordenes1.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: Linea 2 de mi correo en ordenes.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 250 OK
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: MAIL FROM: <pp@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: RCPT TO: <juan@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: QUIT
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: DATA
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846 Mensaje: 221 Cerrando el servicio
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: Texto de mi segundo correo.
+Comunicación Finalizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50846
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: Linea 2 de mi correo en ordenes2.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: MAIL FROM: <manolo.usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: MAIL FROM: <manolo@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: RCPT TO <cristina@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 500 Error de sintaxis
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: RCPT TO: <cristina@usal.es>
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: DATA
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 354 Comenzando con el texto del correo, finalice con .
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: Texto de mi correo 22.
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: Linea 2 de mi segundo correo en ordenes.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: QUIT
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830 Mensaje: 221 Cerrando el servicio
+Comunicación Finalizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50830
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: DATA
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: Linea 2 de mi correo en ordenes2.txt
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: .
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 250 OK
+Mensaje Recibido		 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: QUIT
+Mensaje Enviado			 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852 Mensaje: 221 Cerrando el servicio
+Comunicación Finalizada	 Fecha: Fri Dec  9 03:42:43 2022 Nombre del host: localhost IP: 16777343 Protocolo: TCP Puerto: 50852
