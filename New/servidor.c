@@ -61,6 +61,22 @@ extern int errno;
 void serverTCP(int s, struct sockaddr_in peeraddr_in);
 void serverUDP(int s, struct sockaddr_in clientaddr_in);
 void errout(char *);		/* declare error out routine */
+void cierreOrdenado(char * mensaje, sem_t *sem, int s, char *aborrar1, char *aborrar2);
+
+void cierreOrdenado(char * mensaje, sem_t *sem, int s, char *aborrar1, char *aborrar2){
+	
+	fprintf(stderr, "%s\n. Cerrando ordenadamente el servidor.", mensaje);
+	close(s);
+	if(aborrar1 != NULL){
+		remove(aborrar1);
+	}
+	if(aborrar2 != NULL){
+		remove(aborrar2);
+	}
+	sem_destroy(sem);
+	exit(0);
+}
+
 
 int FIN = 0;             /* Para el cierre ordenado */
 void finalizar(){ FIN = 1; }
@@ -73,20 +89,14 @@ char *argv[];
 
     int s_TCP, s_UDP;		/* connected socket descriptor */
     int ls_TCP;				/* listen socket descriptor */
-    
     int cc;				    /* contains the number of bytes read */
-     
     struct sigaction sa = {.sa_handler = SIG_IGN}; /* used to ignore SIGCHLD */
-    
     struct sockaddr_in myaddr_in;	/* for local socket address */
     struct sockaddr_in clientaddr_in;	/* for peer socket address */
 	int addrlen;
-	
     fd_set readmask;
     int numfds,s_mayor;
-    
     char buffer[BUFFERSIZE];	/* buffer for packets to be read into */
-    
     struct sigaction vec;
 
 		/* Create the listen socket. */
@@ -122,6 +132,7 @@ char *argv[];
 	if (bind(ls_TCP, (const struct sockaddr *) &myaddr_in, sizeof(struct sockaddr_in)) == -1) {
 		perror(argv[0]);
 		fprintf(stderr, "%s: unable to bind address TCP\n", argv[0]);
+		close(ls_TCP);
 		exit(1);
 	}
 		/* Initiate the listen on the socket so remote users
@@ -131,6 +142,7 @@ char *argv[];
 	if (listen(ls_TCP, 5) == -1) {
 		perror(argv[0]);
 		fprintf(stderr, "%s: unable to listen on socket\n", argv[0]);
+		close(ls_TCP);
 		exit(1);
 	}
 	
@@ -139,15 +151,19 @@ char *argv[];
 	s_UDP = socket (AF_INET, SOCK_DGRAM, 0);
 	if (s_UDP == -1) {
 		perror(argv[0]);
-		printf("%s: unable to create socket UDP\n", argv[0]);
+		fprintf(stderr,"%s: unable to create socket UDP\n", argv[0]);
+		close(ls_TCP);
 		exit(1);
-	   }
+	}
+
 	/* Bind the server's address to the socket. */
 	if (bind(s_UDP, (struct sockaddr *) &myaddr_in, sizeof(struct sockaddr_in)) == -1) {
 		perror(argv[0]);
-		printf("%s: unable to bind address UDP\n", argv[0]);
+		fprintf(stderr,"%s: unable to bind address UDP\n", argv[0]);
+		close(ls_TCP);
+		close(s_UDP);
 		exit(1);
-	    }
+	}
 
 		/* Now, all the initialization of the server is
 		 * complete, and any user errors will have already
@@ -168,6 +184,8 @@ char *argv[];
 	case -1:		/* Unable to fork, for some reason. */
 		perror(argv[0]);
 		fprintf(stderr, "%s: unable to fork daemon\n", argv[0]);
+		close(ls_TCP);
+		close(s_UDP);
 		exit(1);
 
 	case 0:     /* The child process (daemon) comes here. */
@@ -191,6 +209,8 @@ char *argv[];
 		if ( sigaction(SIGCHLD, &sa, NULL) == -1) {
             perror(" sigaction(SIGCHLD)");
             fprintf(stderr,"%s: unable to register the SIGCHLD signal\n", argv[0]);
+			close(ls_TCP);
+			close(s_UDP);
             exit(1);
         }
             
@@ -200,6 +220,8 @@ char *argv[];
         if ( sigaction(SIGTERM, &vec, (struct sigaction *) 0) == -1) {
             perror(" sigaction(SIGTERM)");
             fprintf(stderr,"%s: unable to register the SIGTERM signal\n", argv[0]);
+			close(ls_TCP);
+			close(s_UDP);
             exit(1);
         }
 
@@ -310,15 +332,18 @@ char *argv[];
 						if(bind(nuevoSocketUDP,(struct sockaddr *) &udpaddr_in, sizeof(struct sockaddr_in)) == -1){
 							perror(argv[0]);
 							printf("%s: unable to bind address UDP\n", argv[0]);
+							close(nuevoSocketUDP);
 							exit(1);
 						}
 
+						
 						//sendto
 						if(sendto(nuevoSocketUDP," ",1,0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
 							perror("serverUDP");
 							printf("%s: sendto error\n", "serverUDP");
 							exit(1);
 						}
+						
 
         				serverUDP(nuevoSocketUDP, clientaddr_in);
         				exit(0);
@@ -363,7 +388,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 	//Variables
 	char *mensaje_r;
 	FILE * log;
-	char logString[1024];
+	char errorString[512];
 	int nivel = 1;
 	int case4 = 0;
 	int addrlen;
@@ -380,15 +405,15 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
      status = getnameinfo((struct sockaddr *)&clientaddr_in,sizeof(clientaddr_in),
                            hostname,MAXHOST,NULL,0,0);
      if(status){
-           	/* The information is unavailable for the remote
-			 * host.  Just format its internet address to be
-			 * printed out in the logging information.  The
-			 * address will be shown in "internet dot format".
-			 */
-			 /* inet_ntop para interoperatividad con IPv6 */
-            if (inet_ntop(AF_INET, &(clientaddr_in.sin_addr), hostname, MAXHOST) == NULL)
-            	perror(" inet_ntop \n");
-             }
+		/* The information is unavailable for the remote
+			* host.  Just format its internet address to be
+			* printed out in the logging information.  The
+			* address will be shown in "internet dot format".
+			*/
+			/* inet_ntop para interoperatividad con IPv6 */
+		if (inet_ntop(AF_INET, &(clientaddr_in.sin_addr), hostname, MAXHOST) == NULL)
+			perror(" inet_ntop \n");
+	}
 
 	addrlen = sizeof(struct sockaddr_in);
 	
@@ -400,8 +425,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 		 */
 	linger.l_onoff  =1;
 	linger.l_linger =1;
-	if (setsockopt(s, SOL_SOCKET, SO_LINGER, &linger,
-					sizeof(linger)) == -1) {
+	if (setsockopt(s, SOL_SOCKET, SO_LINGER, &linger, sizeof(linger)) == -1) {
 		errout(hostname);
 	}
 
@@ -409,7 +433,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 	respuesta = (char*) malloc (516);
 
 	//Respuesta cuando el cliente realiza la conexión
-	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
+	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");
 	snprintf(respuesta,516,"%s",resp220);
 
 	if(sendto(s,respuesta,516, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
@@ -429,13 +453,13 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 					fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", ++n_intentos);
 					if(n_intentos == 5)
 					{
-						fprintf(stderr, "Número máximo de intentos de recepción de mensaje en el servidor UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(clientaddr_in.sin_port));
-						exit(1);		// TODO: Hacer cierre ordenado
+						snprintf(errorString,512,"Número máximo de intentos de recepción de mensaje en el servidor UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(clientaddr_in.sin_port));
+						cierreOrdenado(errorString, &sem, s, mensaje_r, respuesta);
 					}
 				}
 				else{
-					fprintf(stderr, "No se ha podido recibir una respuesta en el servidor UDP\n");
-					exit(1);
+					snprintf(errorString,512,"No se ha podido recibir una respuesta en el servidor UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(clientaddr_in.sin_port));
+					cierreOrdenado(errorString, &sem, s, mensaje_r, respuesta);
 				}
 			}else{
 				alarm(0);
@@ -542,9 +566,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 			}
 
 			if(sendto(s,respuesta,516, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
-				perror("serverUDP");
-				printf("%s: sendto error\n", "serverUDP");
-				exit(1);
+				cierreOrdenado("serverUDP: sendto error\n", &sem, s, mensaje_r, respuesta);
 			}
 
 		escribirLogServer(respuesta,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "UDP", 2);
@@ -600,7 +622,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	//Variables
 	char *mensaje_r;
 	FILE * log;
-	char logString[1024];
+	char errorString[512];
 	int nivel = 1;
 	int case4 = 0;
 	int smtp_number = 500;
@@ -632,8 +654,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	*/
 	linger.l_onoff  =1;
 	linger.l_linger =1;
-	if (setsockopt(s, SOL_SOCKET, SO_LINGER, &linger,
-					sizeof(linger)) == -1) {
+	if (setsockopt(s, SOL_SOCKET, SO_LINGER, &linger,sizeof(linger)) == -1) {
 		errout(hostname);
 	}
 
@@ -645,8 +666,8 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	snprintf(respuesta,516,"%s",resp220);
 
 	if (send(s, respuesta, 516, 0) < 0) {
-		fprintf(stderr, "Connection aborted on error.");
-		exit(1);
+		snprintf(errorString,512,"ServerTCP: Conexion abortada en error en send para %d\n", ntohs(clientaddr_in.sin_port));
+		cierreOrdenado(errorString, &sem, s, mensaje_r, respuesta);
 	}
 	
 	escribirLogServer(respuesta,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 2);
@@ -753,8 +774,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			}
 
 			if (send(s, respuesta, 516, 0) <= 0) {
-				fprintf(stderr, "Connection aborted on error.");
-				exit(1);
+				cierreOrdenado("serverTCP: sendto error\n", &sem, s, mensaje_r, respuesta);
 			}
 
 			escribirLogServer(respuesta,hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 2);
