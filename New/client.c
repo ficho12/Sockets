@@ -66,37 +66,18 @@ char *argv[];
     struct sockaddr_in myaddr_in;	/* for local socket address */
     struct sockaddr_in servaddr_in;	/* for server socket address */
 	struct sockaddr_in udpaddr_in; //para el nuevo socket de UDP con puerto efímero y único para esta conexión
-	int addrlen, i, j, errcode;
+	int addrlen, errcode;
     /* This example uses TAM_BUFFER byte messages. */
-	char buf[TAM_BUFFER];
+	//Nuevas variables
 	char logString[1024];
 	char logFileName[99];
 	FILE * log;
-
-	//Nuevas variables
 	char *contents;
 	size_t cont_size = 516;
-	char delim[] = " ";
-	char tipo[2];
-	char *pagina;
-	char *get_s;
-	int get = 0;
-    size_t len = 0;
-	int cont = 1;
-	char *ptr,*ptr2;
-	char *mensaje;
-	char keep_alive[200];
-	int flag = 0;
 	char *respuesta;
-	long long length, length2 = 0, lengthRecibido;
-	int e;
-	char longitud[256];
-	char fichero[256];
 	int cuerpoCorreo = 0;
 
 	respuesta = (char*) malloc (516);
-
-	mkdir("logs", S_IRWXU | S_IRWXG | S_IRWXO);
 	
 	/* clear out address structures */
 	memset ((char *)&myaddr_in, 0, sizeof(struct sockaddr_in));
@@ -234,7 +215,7 @@ char *argv[];
 				cuerpoCorreo = 0;
 
 			if (send(s, contents, 516, 0) == -1) {
-				fprintf(stderr, "%s: Connection aborted on error %s",get_s,strerror(errno));
+				fprintf(stderr, "Connection aborted on error %s.",strerror(errno));
 				exit(1);
 			}
 

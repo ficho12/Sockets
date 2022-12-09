@@ -89,8 +89,6 @@ char *argv[];
     
     struct sigaction vec;
 
-	//mkdir("/logs", S_IRWXU | S_IRWXG | S_IRWXO);
-
 		/* Create the listen socket. */
 	ls_TCP = socket (AF_INET, SOCK_STREAM, 0);
 	if (ls_TCP == -1) {
@@ -282,8 +280,6 @@ char *argv[];
                     printf("%s: recvfrom error\n", argv[0]);
                     exit (1);
                 }
-
-				//Comentar
 				
 					switch (fork()) {
         			case -1:	// Can't fork, just exit.
@@ -325,44 +321,6 @@ char *argv[];
 							exit(1);
 						}
 
-						/*
-						struct in_addr reqaddr;	//for requested host's address 
-						struct hostent *hp;		// pointer to host info for requested host
-						int nc, errcode;
-
-						struct addrinfo hints, *res;
-
-						int addrlen;
-						
-						addrlen = sizeof(struct sockaddr_in);
-
-						memset (&hints, 0, sizeof (hints));
-						hints.ai_family = AF_INET;
-							// Treat the message as a string containing a hostname.
-							// Esta funci�n es la recomendada para la compatibilidad con IPv6 gethostbyname queda obsoleta. 
-						errcode = getaddrinfo (buffer, NULL, &hints, &res);
-						if (errcode != 0){
-							// Name was not found.  Return a
-							//special value signifying the error.
-							reqaddr.s_addr = ADDRNOTFOUND;
-						}
-						else {
-							//Copy address of host into the return buffer.
-							reqaddr = ((struct sockaddr_in *) res->ai_addr)->sin_addr;
-						}
-						freeaddrinfo(res);
-
-						nc = sendto (s, &reqaddr, sizeof(struct in_addr),
-								0, (struct sockaddr *)&clientaddr_in, addrlen);
-						if ( nc == -1) {
-							perror("serverUDP");
-							printf("%s: sendto error\n", "serverUDP");
-							return;
-							}
-						
-						}
-						*/
-
         				serverUDP(nuevoSocketUDP, clientaddr_in);
         				exit(0);
         			}
@@ -395,11 +353,9 @@ char *argv[];
 void serverUDP(int s, struct sockaddr_in clientaddr_in)
 {
     int reqcnt = 0;		/* keeps count of number of requests */
-	char buf[TAM_BUFFER];		/* This example uses TAM_BUFFER byte messages. */
 	char hostname[MAXHOST];		/* remote host's name string */
 
 	int len, len1, status;
-    struct hostent *hp;		/* pointer to host info for remote host */
     long timevar;			/* contains time returned by time() */
     
     struct linger linger;		/* allow a lingering, graceful close; */
@@ -407,28 +363,13 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 
 	//Variables
 	char *mensaje_r;
-	char *html;
-	char *comando;
-	int comando_b = 0;
-	char *tipo,*tipo_aux;
-	char *aux;
 	FILE * log;
-	long long final_log;
 	char logString[1024];
-	char logFileName[99];
-	int contador = 0;
 	int nivel = 1;
 	int case4 = 0;
 	int addrlen;
-	
 	int smtp_number = 500;
-	char * buffer = 0;
-	long long length = 0,length2 = 0;
-	FILE * f;
-	char *respuesta = 0,*cabecera = 0,*paquete = 0;
-
-	char longitud[256];
-
+	char *respuesta = 0;
 	int n_intentos = 0;
 
 	/* Look up the host information for the remote host
@@ -472,26 +413,12 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
 	snprintf(respuesta,516,"%s",resp220);
 
-	/*
-	if (send(s, respuesta, 1024, 0) < 0) {
-			fprintf(stderr, "%s: Connection aborted on error ",	comando);
-			exit(1);
-	}
-	*/
-
 	if(sendto(s,respuesta,516, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
 		perror("serverUDP");
 		printf("%s: sendto error\n", "serverUDP");
 		exit(1);
 	}
 
-	/*
-	cc = recvfrom(s_UDP, buffer, BUFFERSIZE - 1, 0,
-                   (struct sockaddr *)&clientaddr_in, &addrlen);
-	*/
-
-	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada. 
-	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
 	for(;;){
 		n_intentos = 0;
 		while(n_intentos < MAX_INTENTOS){
@@ -514,9 +441,8 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			}
 		}
-		//aux = (char*) malloc(1024*sizeof(char));
+
 		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\tSMTP_NUM%d\n", mensaje_r, (int) strlen(mensaje_r), nivel,smtp_number);
-		//Debug printf("%s\n",mensaje_r);
 		
 		//bucle
 		/*	Refenciando el diagrama de las diapositivas
@@ -561,7 +487,6 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			case 5:		//REGEX .\r\n
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
-					//printf("\tLength: %d",(int) strlen(mensaje_r));
 					smtp_number = 500;	
 				}else{
 					smtp_number = 0;		//0
@@ -570,7 +495,6 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			case 6:		//REGEX .\r\n
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
-					//printf("\tLength: %d",(int) strlen(mensaje_r));
 					nivel++;
 					smtp_number = 250;
 				}else
@@ -597,29 +521,22 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 			//Una vez decidido el mensaje que se va a enviar se (smtp_number) se crea la cadena	
 			switch(smtp_number){
 				case 221:	//Respuesta a la orden QUIT
-						printf("Respuesta: 221 Cerrando el servicio\n");	//Cambiar Respuesta
+						printf("Respuesta: 221 Cerrando el servicio\n");
 						snprintf(respuesta,516,"%s",resp221);
 					break;
 				case 250:	//Respuesta correcta a las ordenes MAIL, RCPT, DATA
-						printf("Respuesta: 250 OK\n");	//Cambiar Respuesta
+						printf("Respuesta: 250 OK\n");
 						snprintf(respuesta,516,"%s",resp250);
 					break;
 				case 354:	//Respuesta al envío de la orden DATA
-						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");	//Cambiar Respuesta
+						printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");
 						snprintf(respuesta,516,"%s",resp354);
 					break;
 				case 500:	//Respuesta a errores de sintaxis en cualquier orden
-						printf("Respuesta: 500 Error de sintaxis\n");	//Cambiar Respuesta
+						printf("Respuesta: 500 Error de sintaxis\n");
 						snprintf(respuesta,516,"%s",resp500);
 					break;
 			}
-
-			/*
-			if (send(s, respuesta, 1024, 0) <= 0) {
-					fprintf(stderr, "%s: Connection aborted on error ",	comando);
-					exit(1);
-			}
-			*/
 
 			if(sendto(s,respuesta,516, 0, (struct sockaddr *)&clientaddr_in, addrlen)== -1) {
 				perror("serverUDP");
@@ -668,10 +585,9 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 void serverTCP(int s, struct sockaddr_in clientaddr_in)
 {
 	int reqcnt = 0;		/* keeps count of number of requests */
-	char buf[TAM_BUFFER];		/* This example uses TAM_BUFFER byte messages. */
 	char hostname[MAXHOST];		/* remote host's name string */
 
-	int len, len1, status;
+	int status;
     struct hostent *hp;		/* pointer to host info for remote host */
     long timevar;			/* contains time returned by time() */
     
@@ -680,27 +596,12 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 	//Variables
 	char *mensaje_r;
-	char *html;
-	char *comando;
-	int comando_b = 0;
-	char *tipo,*tipo_aux;
-	char *aux;
 	FILE * log;
-	long long final_log;
 	char logString[1024];
-	char logFileName[99];
-	int contador = 0;
 	int nivel = 1;
 	int case4 = 0;
-	
 	int smtp_number = 500;
-	char * buffer = 0;
-	long long length = 0,length2 = 0;
-	FILE * f;
-	char *respuesta = 0,*cabecera = 0,*paquete = 0;
-
-	char longitud[256];
-
+	char *respuesta = 0;
 	/* Look up the host information for the remote host
 	 * that we have connected with.  Its internet address
 	 * was returned by the accept call, in the main
@@ -737,21 +638,17 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 	respuesta = (char*) malloc (516);
 
 	//Respuesta cuando el cliente realiza la conexión
-	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");	//Cambiar Respuesta
+	printf("Respuesta: 220 Servicio de transferencia simple de correo preparado\n");
 	snprintf(respuesta,516,"%s",resp220);
 
 	if (send(s, respuesta, 516, 0) < 0) {
-			fprintf(stderr, "%s: Connection aborted on error ",	comando);
-			exit(1);
+		fprintf(stderr, "Connection aborted on error.");
+		exit(1);
 	}
 
-	//	TODO: Se recibe de KB en KB, mirar que cantidad es la adecuada. 
-	// 	TODO: EDIT: La cantidad adecuada es el tamaño del mensaje a enviar + \r\n. Por ahora vamos a enviar 512 que es el tamaño máximo.
-	while (recv(s, mensaje_r, 516, 0) == 516) {	//	while (recv(s, mensaje_r, 1024, 0) <= 1024)	Porque puede recibir menos bytes (?)
+	while (recv(s, mensaje_r, 516, 0) == 516) {	
 
-		//aux = (char*) malloc(1024*sizeof(char));
 		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, (int) strlen(mensaje_r), nivel);
-		//Debug printf("%s\n",mensaje_r);
 		
 		//bucle
 		/*	Refenciando el diagrama de las diapositivas
@@ -796,7 +693,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			case 5:		//REGEX .\r\n
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
-					//printf("\tLength: %d",(int) strlen(mensaje_r));
 					smtp_number = 500;	
 				}else{
 					smtp_number = 0;		//0
@@ -805,7 +701,6 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 				break;
 			case 6:		//REGEX .\r\n
 				if ((strstr(mensaje_r, ".\r\n") != NULL) && (strlen(mensaje_r) == 3) ) {
-					//printf("\tLength: %d",(int) strlen(mensaje_r));
 					nivel++;
 					smtp_number = 250;
 				}else
@@ -849,11 +744,9 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 					break;
 			}
 
-			//printf("Respuesta FINAL: %s\n", respuesta);
-
 			if (send(s, respuesta, 516, 0) <= 0) {
-					fprintf(stderr, "%s: Connection aborted on error ",	comando);
-					exit(1);
+				fprintf(stderr, "Connection aborted on error.");
+				exit(1);
 			}
 
 			escribirRespuestaLog(respuesta, &sem);
@@ -878,10 +771,10 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		 * times printed in the log file to reflect more accurately
 		 * the length of time this connection was used.
 		 */
-	close(s);
 
 	escribirLogServer(hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 1);
 	
+	close(s);
 }
 
 /*
