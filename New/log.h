@@ -10,9 +10,9 @@
 #define LOGFILENAME "logs/peticiones.log"
 
 
-/* Formato: 0 --> Mensaje inicial, 1 --> Mensaje final 
+/* Formato: 0 --> Comunicación Realizada, 1 --> Mensaje Recibido, 2 --> Mensaje Enviado, 3 --> Comunicación Finalizada 
  * Devuelve 0 si va todo bien o -1 en caso de fallo al abrir o crear el archivo de log
 */
-int escribirLogServer(char * hostname, int ip, int puerto, sem_t *sem, char * protocolo, int formato);
+int escribirLogServer(char * mensaje ,char * hostname, int ip, int puerto, sem_t *sem, char * protocolo, int formato);
 int escribirRespuestaLog (char * mensaje, sem_t *sem);
 int escribirRespuestaLogCliente (char * mensaje, char * logName);

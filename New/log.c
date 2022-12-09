@@ -1,10 +1,11 @@
 #include "log.h"
 
-int escribirLogServer(char * hostname, int ip, int puerto, sem_t *sem, char * protocolo, int formato){
-	
+int escribirLogServer(char * mensaje, char * hostname, int ip, int puerto, sem_t *sem, char * protocolo, int formato){
+	long timevar;
+    time (&timevar);
+
     char logString[512];
     FILE * log;
-    long timevar;
 
     mkdir("logs", S_IRWXU | S_IRWXG | S_IRWXO); // Creamos la carpeta de logs
 	
@@ -21,13 +22,18 @@ int escribirLogServer(char * hostname, int ip, int puerto, sem_t *sem, char * pr
 	}
 
     /* Log a startup message. */
-    time (&timevar);
-	
+    char * time_str = ctime(&timevar);
+	time_str[strlen(time_str)-1] = '\0';
+
     //Guardamos la string del mensaje de log
     switch(formato){
-        case 0:	snprintf(logString,sizeof(logString), "Comunicación Realizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: %s Puerto: %d ", (char *) ctime(&timevar), hostname, ip, protocolo, puerto);
+        case 0:	snprintf(logString,sizeof(logString), "Comunicación Realizada\t Fecha: %s Nombre del host: %s IP: %d Protocolo: %s Puerto: %d\n", time_str, hostname, ip, protocolo, puerto);
             break;
-        case 1:	snprintf(logString,sizeof(logString), "Comunicación Finalizada. Fecha: %s Ejecutable: clientcp Nombre del host:%s IP: %d Protocolo: %s Puerto: %d ", (char *) ctime(&timevar), hostname, ip, protocolo, puerto);
+        case 1:	snprintf(logString,sizeof(logString), "Mensaje Recibido\t\t Fecha: %s Nombre del host: %s IP: %d Protocolo: %s Puerto: %d Mensaje: %s", time_str, hostname, ip, protocolo, puerto, mensaje);
+            break;
+        case 2:	snprintf(logString,sizeof(logString), "Mensaje Enviado\t\t\t Fecha: %s Nombre del host: %s IP: %d Protocolo: %s Puerto: %d Mensaje: %s", time_str, hostname, ip, protocolo, puerto, mensaje);
+            break;
+        case 3:	snprintf(logString,sizeof(logString), "Comunicación Finalizada\t Fecha: %s Nombre del host: %s IP: %d Protocolo: %s Puerto: %d\n", time_str, hostname, ip, protocolo, puerto);
             break;
     }
 	//Escribimos la String en el archivo de log
