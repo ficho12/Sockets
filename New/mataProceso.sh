@@ -5,6 +5,7 @@
  # mataProceso.sh mata al Servidor, compila, y pasa los logs a logs2
 ps -ef | grep servidor | grep -v grep | awk '{print $2}' | xargs -r kill -9
 make
+mkdir logs2
 rm logs2/*
 cp -R logs/* logs2/
 rm logs/*
