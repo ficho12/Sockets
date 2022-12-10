@@ -219,7 +219,7 @@ char *argv[];
 		contents = (char*) malloc (516);
 		respuesta = (char*) malloc (516);
 
-		while(getline(&contents,&cont_size,input_file) != -1)
+		while(fgets(&contents,516,input_file) != NULL)
 		{
 			if ((strstr(contents, ".\r\n") != NULL) && (strlen(contents) == 3))
 				cuerpoCorreo = 0;
@@ -325,7 +325,7 @@ char *argv[];
 		contents = (char*) malloc (516);
 		respuesta = (char*) malloc (516);
 		int n_intentos;
-		while(getline(&contents,&cont_size,input_file) != -1)
+		while(fgets(&contents,516,input_file) != NULL)
 		{
 			n_intentos = 0;
 			while(n_intentos < MAX_INTENTOS){					
