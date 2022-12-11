@@ -594,19 +594,19 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 			switch (smtp_number)
 			{
 			case 221: // Respuesta a la orden QUIT
-				printf("Respuesta: 221 Cerrando el servicio\n");
+				//printf("Respuesta: 221 Cerrando el servicio\n");
 				snprintf(respuesta, 516, "%s", resp221);
 				break;
 			case 250: // Respuesta correcta a las ordenes MAIL, RCPT, DATA
-				printf("Respuesta: 250 OK\n");
+				//printf("Respuesta: 250 OK\n");
 				snprintf(respuesta, 516, "%s", resp250);
 				break;
 			case 354: // Respuesta al envío de la orden DATA
-				printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");
+				//printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n");
 				snprintf(respuesta, 516, "%s", resp354);
 				break;
 			case 500: // Respuesta a errores de sintaxis en cualquier orden
-				printf("Respuesta: 500 Error de sintaxis\n");
+				//printf("Respuesta: 500 Error de sintaxis\n");
 				snprintf(respuesta, 516, "%s", resp500);
 				break;
 			}
@@ -620,7 +620,7 @@ void serverUDP(int s, struct sockaddr_in clientaddr_in)
 		}
 		else
 		{
-			printf("DATA. No se envía respuesta\n"); // No se envía respuesta
+			//printf("DATA. No se envía respuesta\n"); // No se envía respuesta
 		}
 
 		free(mensaje_r);
@@ -726,7 +726,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 
 		escribirLogServer(mensaje_r, hostname, clientaddr_in.sin_addr.s_addr, ntohs(clientaddr_in.sin_port), &sem, "TCP", 1);
 
-		printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, (int)strlen(mensaje_r), nivel);
+		//printf("Recibido: \"%s\"\tLength: %d\tNivel: %d\n", mensaje_r, (int)strlen(mensaje_r), nivel);
 
 		// bucle
 		/*	Refenciando el diagrama de las diapositivas
@@ -820,19 +820,19 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 			switch (smtp_number)
 			{
 			case 221:											 // Respuesta a la orden QUIT
-				printf("Respuesta: 221 Cerrando el servicio\n"); // Cambiar Respuesta
+				//printf("Respuesta: 221 Cerrando el servicio\n"); // Cambiar Respuesta
 				snprintf(respuesta, 516, "%s", resp221);
 				break;
 			case 250:						   // Respuesta correcta a las ordenes MAIL, RCPT, DATA
-				printf("Respuesta: 250 OK\n"); // Cambiar Respuesta
+				//printf("Respuesta: 250 OK\n"); // Cambiar Respuesta
 				snprintf(respuesta, 516, "%s", resp250);
 				break;
 			case 354:																		   // Respuesta al envío de la orden DATA
-				printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n"); // Cambiar Respuesta
+				//printf("Respuesta: 354 Comenzando con el texto del correo, finalice con .\n"); // Cambiar Respuesta
 				snprintf(respuesta, 516, "%s", resp354);
 				break;
 			case 500:										  // Respuesta a errores de sintaxis en cualquier orden
-				printf("Respuesta: 500 Error de sintaxis\n"); // Cambiar Respuesta
+				//printf("Respuesta: 500 Error de sintaxis\n"); // Cambiar Respuesta
 				snprintf(respuesta, 516, "%s", resp500);
 				break;
 			}
@@ -846,7 +846,7 @@ void serverTCP(int s, struct sockaddr_in clientaddr_in)
 		}
 		else
 		{
-			printf("DATA. No se envía respuesta\n"); // No se envía respuesta
+			//printf("DATA. No se envía respuesta\n"); // No se envía respuesta
 		}
 
 		free(mensaje_r);

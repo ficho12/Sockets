@@ -386,5 +386,5 @@ char *argv[];
 
 	}
 
-exit (0);
+	exit(0);
 }
