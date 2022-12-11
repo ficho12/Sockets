@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = 
-#Descomentar la siguiente linea para olivo
-LIBS = -lsocket -lnsl
+#Descomentar la siguiente linea para nogal
+LIBS = -pthread 
 #Descomentar la siguiente linea para linux
 #LIBS =
 

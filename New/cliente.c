@@ -59,17 +59,26 @@ int comprobarCRLF(char * mensaje){
 	}
 }
 
+void cierreOrdenado(char *mensaje, int s,char* logFileName, char *aborrar1, char *aborrar2)
+{
+	close(s);
+	if (aborrar1 != NULL)
+	{
+		remove(aborrar1);
+	}
+	if (aborrar2 != NULL)
+	{
+		remove(aborrar2);
+	}
+	escribirRespuestaLogCliente(mensaje, logFileName);
+	exit(1);
+}
+
 int main(argc, argv)
 int argc;
 char *argv[];
 {
-	if (argc != 4) {
-		fprintf(stderr, "Usage:  %s <remote host> <mode (TCP or UDP)> <orders.txt>\n", argv[0]);
-		exit(1);
-	}
-
-	const char* filename = argv[3];
-	// TODO: Comprobacion de errores
+	char filename[50];
     int s;				/* connected socket descriptor */
    	struct addrinfo hints, *res;
     long timevar;			/* contains time returned by time() */
@@ -80,12 +89,25 @@ char *argv[];
     /* This example uses TAM_BUFFER byte messages. */
 	//Nuevas variables
 	char logString[1024];
+	char errorString[512];
 	char logFileName[99];
 	FILE * log;
 	char *contents;
 	size_t cont_size = 516;
 	char *respuesta;
 	int cuerpoCorreo = 0;
+
+	if (argc != 4) {
+		fprintf(stderr, "Usage:  %s <remote host> <mode (TCP or UDP)> <orders.txt>\n", argv[0]);
+		exit(1);
+	}
+
+	if(argv[3] != NULL)
+		strcpy(filename, argv[3]);
+	else{
+		fprintf(stderr, "Usage:  %s <remote host> <mode (TCP or UDP)> <orders.txt>\n", argv[0]);
+		exit(1);
+	}
 
 	respuesta = (char*) malloc (516);
 	
@@ -108,9 +130,9 @@ char *argv[];
     if (errcode != 0){
 			/* Name was not found.  Return a
 			 * special value signifying the error. */
-		fprintf(stderr, "%s: No es posible resolver la IP de %s\n",
+		snprintf(errorString, 512, "%s: No es posible resolver la IP de %s\n",
 				argv[0], argv[1]);
-		exit(1);
+		cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
         }
     else {
 		/* Copy address of host */
@@ -128,15 +150,13 @@ char *argv[];
 	if(!strcmp(argv[2],"TCP")){
 		s = socket (AF_INET, SOCK_STREAM, 0);
 		if (s == -1) {
-			perror(argv[0]);
-			fprintf(stderr, "%s: unable to create socket TCP\n", argv[0]);
-			exit(1);
+			snprintf(errorString, 512, "%s: No se ha podido creo el socket TCP\n",argv[0]);
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 		}
 
 		if (connect(s, (const struct sockaddr *)&servaddr_in, sizeof(struct sockaddr_in)) == -1) {
-			perror(argv[0]);
-			fprintf(stderr, "%s: unable to connect to remote\n", argv[0]);
-			exit(1);
+			snprintf(errorString, 512, "%s: No se ha podido conectar al remoto\n",argv[0]);
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 		}
 
 	}else if(!strcmp(argv[2],"UDP")){
@@ -148,16 +168,13 @@ char *argv[];
 
 		s = socket (AF_INET, SOCK_DGRAM, 0);
 		if (s == -1) {
-			perror(argv[0]);
-			fprintf(stderr, "%s: unable to create socket UDP\n", argv[0]);
-			exit(1);
+			snprintf(errorString, 512, "%s: No se ha podido crear el socket UDP\n",argv[0]);
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 		}
 
 		if(bind(s, (const struct sockaddr *)&myaddr_in, addrlen) == -1){
-			perror(argv[0]);
-			printf("%s: unable to bind address UDP\n", argv[0]);
-			exit(1);
-		}
+			snprintf(errorString, 512, "%s: No se ha podido hacer bind a la direccion UDP\n",argv[0]);
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 	}else{
 		fprintf(stderr, "Usage:  %s <remote host> <mode (TCP or UDP)> <orders.txt>\n", argv[0]);
 		exit(1);
@@ -171,29 +188,17 @@ char *argv[];
 		 * of the address.
 		 */
 	if (getsockname(s, (struct sockaddr *)&myaddr_in, &addrlen) == -1) {
-		perror(argv[0]);
-		fprintf(stderr, "%s: unable to read socket address\n", argv[0]);
-		exit(1);
+		snprintf(errorString, 512, "%s: No se ha podido leer la direccion del socket\n",argv[0]);
+		cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 	}
 
 	if(!strcmp(argv[2],"TCP")){
 		if(recv(s, respuesta, 516, 0) < 0){
-			fprintf(stderr, "Connection aborted on error %s", strerror(errno));
-			exit(1);
+			snprintf(errorString, 512, "%s: Conexion abortada en recv por el error %s\n",argv[0], strerror(errno));
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 		}
 
-		printf("Respuesta: %s\n", respuesta);
-
-		/* Print out a startup message for the user. */
-		time(&timevar);
-		/* The port number must be converted first to host byte
-		* order before printing.  On most hosts, this is not
-		* necessary, but the ntohs() call is included here so
-		* that this program could easily be ported to a host
-		* that does require it.
-		*/
-		printf("Connected to %s on port %u at %s",
-				argv[1], ntohs(myaddr_in.sin_port), (char *) ctime(&timevar));
+		//printf("Respuesta: %s\n", respuesta);
 
 		snprintf(logFileName, sizeof(logFileName), "logs/%d.txt", ntohs(myaddr_in.sin_port));
 
@@ -201,16 +206,16 @@ char *argv[];
 		log = fopen(logFileName, "a");
 		if(log == NULL)
 		{
-			fprintf(stdout,"Error al crear archivo log.\n");
-			exit(EXIT_FAILURE);
+			snprintf(errorString, 512, "%s: Error al crear archivo log.\n",argv[0]);
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 		}
 
 		FILE* input_file = fopen(filename, "r");
 
 		if (!input_file)
 		{
-			fprintf(stdout,"Error al leer el archivo de ordenes.\n");
-			exit(EXIT_FAILURE);
+			snprintf(errorString, 512, "%s: Error al leer el archivo de ordenes %s.\n",argv[0],filename);
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 		}		
 
 		fputs(respuesta, log);
@@ -227,26 +232,25 @@ char *argv[];
 			comprobarCRLF(contents);
 
 			if (send(s, contents, 516, 0) == -1) {
-				fprintf(stderr, "Connection aborted on error %s.",strerror(errno));
-				exit(1);
+				snprintf(errorString, 512, "%s: Conexion abortada en send por el error %s\n",argv[0], strerror(errno));
+				cierreOrdenado(errorString, s, logFileName, respuesta, contents);
 			}
 
-			printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
+			//printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
 
 			if(!cuerpoCorreo)
 			{
 				if(recv(s, respuesta, 516, 0) <= 0){
-					fprintf(stderr, "Connection aborted on error %s", strerror(errno));
-					exit(1);
+					snprintf(errorString, 512, "%s: Conexion abortada en recv por el error %s\n",argv[0], strerror(errno));
+					cierreOrdenado(errorString, s, logFileName, respuesta, contents);
 				}
 
 				if(reg(contents,regDATA) && reg(respuesta,reg354))
 					cuerpoCorreo = 1;
 
-				printf("Respuesta: %s\n", respuesta);
+				//printf("Respuesta: %s\n", respuesta);
 
 				fputs(respuesta, log);
-				//fseek (log, 0, SEEK_END);
 				free(respuesta);
 				respuesta = (char*) malloc (516);
 			}
@@ -277,29 +281,17 @@ char *argv[];
 	else	//UDP
 	{
 		if(sendto(s," ",1,0, (struct sockaddr *)&servaddr_in, addrlen)== -1) {
-			perror("clientUDP");
-			printf("%s: sendto error 1\n", "clientUDP");
-			exit(1);
+			snprintf(errorString, 512, "%s: Conexion abortada en sendto por el error %s\n",argv[0], strerror(errno));
+			cierreOrdenado(errorString, s, logFileName, respuesta, contents);
 		}
 
 		recvfrom(s,respuesta, 516, 0,(struct sockaddr *)&servaddr_in, &addrlen); //Recibe " " para actualizar los datos del socket nuevo para este cliente
 
-		printf("Respuesta: %s\n", respuesta);
+		//printf("Respuesta: %s\n", respuesta);
 
 		recvfrom(s,respuesta, 516, 0,(struct sockaddr *)&servaddr_in, &addrlen); //Recibe 220, primer mensaje real.
 
-		printf("Respuesta: %s\n", respuesta);
-
-		/* Print out a startup message for the user. */
-		time(&timevar);
-		/* The port number must be converted first to host byte
-		* order before printing.  On most hosts, this is not
-		* necessary, but the ntohs() call is included here so
-		* that this program could easily be ported to a host
-		* that does require it.
-		*/
-		printf("Connected to %s on port %u at %s",
-				argv[1], ntohs(myaddr_in.sin_port), (char *) ctime(&timevar));
+		//printf("Respuesta: %s\n", respuesta);
 
 		snprintf(logFileName, sizeof(logFileName), "logs/%d.txt", ntohs(myaddr_in.sin_port));
 
@@ -307,16 +299,16 @@ char *argv[];
 		log = fopen(logFileName, "a");
 		if(log == NULL)
 		{
-			fprintf(stdout,"Error al crear archivo log.\n");
-			exit(EXIT_FAILURE);
+			snprintf(errorString, 512, "%s: Error al crear archivo log.\n",argv[0]);
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 		}
 
 		FILE* input_file = fopen(filename, "r");
 
 		if (!input_file)
 		{
-			fprintf(stdout,"Error al leer el archivo de ordenes.\n");
-			exit(EXIT_FAILURE);
+			snprintf(errorString, 512, "%s: Error al leer el archivo de ordenes %s.\n",argv[0],filename);
+			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
 		}		
 
 		fputs(respuesta, log);
@@ -335,12 +327,11 @@ char *argv[];
 				comprobarCRLF(contents);
 
 				if(sendto(s,contents,cont_size,0, (struct sockaddr *)&servaddr_in, addrlen)== -1) {
-					perror("serverUDP");
-					printf("%s: sendto error 2\n", "serverUDP");
-					exit(1);
+					snprintf(errorString, 512, "%s: Conexion abortada en sendto por el error %s\n",argv[0], strerror(errno));
+					cierreOrdenado(errorString, s, logFileName, respuesta, contents);
 				}
 
-				printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
+				//printf("Enviado: \"%s\"\tLength: %d\tCuerpoCorreo: %d\n", contents, (int) strlen(contents),cuerpoCorreo);
 
 				if(!cuerpoCorreo)
 				{
@@ -348,23 +339,23 @@ char *argv[];
 					if(recvfrom(s,respuesta, 516, 0,(struct sockaddr *)&servaddr_in, &addrlen) == -1){
 						if (errno == EINTR){
 							n_intentos++;
-							fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", n_intentos);
+							//fprintf(stderr, "Se encontro una señal mientras se esperaba un mensaje. Aumentando número de intentos a %d", n_intentos);
 							if(n_intentos == 5)
 							{
-								fprintf(stderr, "Número máximo de intentos de recepción de mensaje en el servidor UDP para %d.\nCerrando ordenadamente el servidor\n", ntohs(servaddr_in.sin_port));
-								exit(1);		// TODO: Hacer cierre ordenado
+								snprintf(errorString, 512, "%s: Número máximo de intentos de recepción de mensaje en el servidor UDP.\nCerrando ordenadamente el servidor\n", argv[0]);
+								cierreOrdenado(errorString, s, logFileName, respuesta, contents);
 							}
 						}
 						else{
-							fprintf(stderr, "No se ha podido recibir una respuesta en el servidor UDP\n");
-							exit(1);
+							snprintf(errorString, 512, "%s: No se ha podido recibir una respuesta en el servidor UDP\n", argv[0]);
+							cierreOrdenado(errorString, s, logFileName, respuesta, contents);
 						}
 					}else{
 						alarm(0);
 						if(reg(contents,regDATA) && reg(respuesta,reg354))
 							cuerpoCorreo = 1;
 
-						printf("Respuesta: %s\n", respuesta);
+						//printf("Respuesta: %s\n", respuesta);
 
 						fputs(respuesta, log);
 						free(respuesta);

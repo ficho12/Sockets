@@ -10,7 +10,6 @@ int escribirLogServer(char * mensaje, char * hostname, int ip, int puerto, sem_t
     mkdir("logs", S_IRWXU | S_IRWXG | S_IRWXO); // Creamos la carpeta de logs
 	
     //Creamos la String para el nombre del archivo de log dinámicamente con el numero de puerto que se recibe
-	//snprintf(logFileName, sizeof(logFileName), "logs/peticiones.log");
 	    
 	sem_wait(sem);
 	//Abrimos el archvio de log, sino existe se crea
