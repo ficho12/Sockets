@@ -70,7 +70,12 @@ void cierreOrdenado(char *mensaje, int s,char* logFileName, char *aborrar1, char
 	{
 		remove(aborrar2);
 	}
-	escribirRespuestaLogCliente(mensaje, logFileName);
+	if (logFileName != NULL)
+	{
+		escribirRespuestaLogCliente(mensaje, logFileName);
+	}else{
+		fprintf(stderr, "%s", mensaje);
+	}
 	exit(1);
 }
 
@@ -175,6 +180,7 @@ char *argv[];
 		if(bind(s, (const struct sockaddr *)&myaddr_in, addrlen) == -1){
 			snprintf(errorString, 512, "%s: No se ha podido hacer bind a la direccion UDP\n",argv[0]);
 			cierreOrdenado(errorString, s, logFileName, respuesta, NULL);
+		}
 	}else{
 		fprintf(stderr, "Usage:  %s <remote host> <mode (TCP or UDP)> <orders.txt>\n", argv[0]);
 		exit(1);
@@ -380,5 +386,5 @@ char *argv[];
 
 	}
 
-	exit (0);
+exit (0);
 }

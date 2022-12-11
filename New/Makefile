@@ -12,7 +12,7 @@ all: ${PROGS}
 servidor: servidor.o log.o
 	${CC} ${CFLAGS} -o $@ servidor.o log.o ${LIBS}
 	
-client: cliente.o log.o
+cliente: cliente.o log.o
 	${CC} ${CFLAGS} -o $@ cliente.o log.o ${LIBS}
 
 log.o: log.c log.h
