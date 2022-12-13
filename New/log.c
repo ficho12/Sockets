@@ -1,4 +1,5 @@
 /*
+ *  Fichero: log.c
  *	Autor:
  *	Fiz Rey Armesto 		34292873B
  */
