@@ -1,3 +1,8 @@
+/*
+ *	Autor:
+ *	Fiz Rey Armesto 		34292873B
+ */
+
 #include <regex.h>
 #include <stdio.h>
 

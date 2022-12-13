@@ -1,3 +1,8 @@
+/*
+ *	Autor:
+ *	Fiz Rey Armesto 		34292873B
+ */
+
 #include "log.h"
 
 int escribirLogServer(char * mensaje, char * hostname, int ip, int puerto, sem_t *sem, char * protocolo, int formato){
